@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,8 +28,10 @@ public class MovieGallery extends AppCompatActivity {
         //Binding the adapter
         movieAdapter = new MainAdapter(this);
         mainRecycler.setAdapter(movieAdapter);
-
         fetchData();
+
+          //  FetchApiData.main();   // for testing purposes try in Asyunc task
+
 
     }
 
