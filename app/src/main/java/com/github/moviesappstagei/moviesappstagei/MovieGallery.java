@@ -1,6 +1,7 @@
 package com.github.moviesappstagei.moviesappstagei;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -11,9 +12,15 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import android.util.Log;
+import android.widget.TextView;
 
+import com.github.moviesappstagei.moviesappstagei.utilities.*;
+
+import org.w3c.dom.Text;
 
 public class MovieGallery extends AppCompatActivity {
 
@@ -32,19 +39,51 @@ public class MovieGallery extends AppCompatActivity {
         //Binding the adapter
         movieAdapter = new MainAdapter(this);
         mainRecycler.setAdapter(movieAdapter);
-        fetchData();
+        //fetchData();
         // TODO - 1. Replace fetchData by Async FetchApiData
-          //  FetchApiData.main();   // for testing purposes try in Asyunc task
-
+        getApiData();
     }
 
-    private void fetchData() {
+    private void getApiData() {
+        URL url = NetworkUtils.buildUrl("popular");
+        Log.v("me", url.toString());
+        new MoviesQueryTask().execute(url);
+    }
+
+    public class MoviesQueryTask extends AsyncTask<URL, Void, String> {
+
+        @Override
+        protected String doInBackground(URL... params) {
+            URL searchUrl = params[0];
+            String githubSearchResults = null;
+            try {
+                githubSearchResults = NetworkUtils.getResponseFromHttpUrl(searchUrl);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return githubSearchResults;
+        }
+
+        @Override
+        protected void onPostExecute(String githubSearchResults) {
+            if (githubSearchResults != null && !githubSearchResults.equals("")) {
+                TextView mTextView = (TextView) findViewById(R.id.mTextView);
+                mTextView.setText(githubSearchResults);
+            }
+        }
+    }
+
+    //----
+
+ /*
+        private void fetchData() {
         List<MovieObject> movies = new ArrayList<>();
         for(int i = 0; i < 20; i++) {
            movies.add(new MovieObject());
         }
         movieAdapter.setList(movies);
-    }
+        }
+*/
 
     //Adding Spinner for Pop/Rating sort
     @Override

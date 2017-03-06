@@ -1,7 +1,6 @@
-package com.github.moviesappstagei.moviesappstagei;
+package com.github.moviesappstagei.moviesappstagei.utilities;
 
 import android.net.Uri;
-import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -13,11 +12,14 @@ import java.util.Scanner;
  * Created by RGHERTA on 2/20/2017.
  */
 
-public class FetchApiData {
+public class NetworkUtils {
 
-    private static final String MOVIES_BASE_URL = "http://api.themoviedb.org/3/movie";
-        private static String QUERY_PARAM = "api_key";
-        private static final String MDB_KEY = "4d2d0514584191012c556bb5c1e78cef";
+    private static final String MOVIES_BASE_URL = "http://api.themoviedb.org/3/movie/";
+    private static final String POSTERS_BASE_URL = " http://image.tmdb.org/t/p/w185/";
+    private static final String PARAM_POP = "popular";
+    private static final String PARAM_RATED = "top_rated";
+    private static String QUERY_PARAM = "api_key";
+    private static final String MDB_KEY = "4d2d0514584191012c556bb5c1e78cef";
 
     public static URL buildUrl(String apiType) {
         Uri builtUri = Uri.parse(MOVIES_BASE_URL).buildUpon()
@@ -52,15 +54,6 @@ public class FetchApiData {
         } finally {
             urlConnection.disconnect();
         }
-    }
-
-    public static void main() throws IOException {
-        URL url = buildUrl("popular");
-        Log.v("me", url.toString());
-        String response = getResponseFromHttpUrl(url).toString();
-        Log.v("UrlResponse", response);
-
-
     }
 
 
