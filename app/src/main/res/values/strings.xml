@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">My Movies (Stg I)</string>
+    <string-array name="spinner_choices">
+        <item>Most Popular</item>
+        <item>Highest Rating</item>
+    </string-array>
 </resources>
