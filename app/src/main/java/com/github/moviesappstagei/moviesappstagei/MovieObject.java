@@ -11,6 +11,7 @@ public class MovieObject {
     private String moviePoster;
     private String movieID;
     private String movieReleaseDate;
+    private String voteAverage;
 
     public String getMovieID() {
         return movieID;
@@ -38,4 +39,8 @@ public class MovieObject {
 
     public String getMovieReleaseDate() {return movieReleaseDate;  }
     public void setMovieReleaseDate(String movieReleaseDate) {this.movieReleaseDate = movieReleaseDate;  }
+
+    public String getVoteAverage() {return voteAverage; }
+    public void setVoteAverage(String voteAverage) { this.voteAverage = voteAverage;}
+
 }
