@@ -17,7 +17,7 @@ import java.util.List;
  */
 
 
-class MainAdapter extends RecyclerView.Adapter<MovieViewHolder> {
+public class MainAdapter extends RecyclerView.Adapter<MovieViewHolder> {
     List<MovieObject> movieList;
     private LayoutInflater inflater;
     private Context context;
@@ -62,7 +62,7 @@ class MainAdapter extends RecyclerView.Adapter<MovieViewHolder> {
 
 
 class MovieViewHolder extends RecyclerView.ViewHolder {
-    ImageView imgView;
+    public ImageView imgView;
 
     public MovieViewHolder(View itemView) {
         super(itemView);

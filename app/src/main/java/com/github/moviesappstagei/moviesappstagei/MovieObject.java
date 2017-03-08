@@ -9,11 +9,19 @@ public class MovieObject {
     private String movieTitle;
     private String movieDescription;
     private String moviePoster;
+    private String movieID;
+    private String movieReleaseDate;
+
+    public String getMovieID() {
+        return movieID;
+    }
+    public void setMovieID(String movieID) {
+        this.movieID = movieID;
+    }
 
     public String getMovieTitle() {
         return movieTitle;
     }
-
     public void setMovieTitle(String movieTitle) {
         this.movieTitle = movieTitle;
     }
@@ -21,17 +29,13 @@ public class MovieObject {
     public String getMovieDescription() {
         return movieDescription;
     }
+    public void setMovieDescription(String movieDescription) { this.movieDescription = movieDescription;}
 
-    public void setMovieDescription(String movieDescription) {
-        this.movieDescription = movieDescription;
-    }
-
-    public String getMoviePoster() {
-       // return moviePoster;
-        return "http://graphicdesignjunction.com/wp-content/uploads/2011/12/grey-movie-poster.jpg";
-    }
-
+    public String getMoviePoster() {return moviePoster;  }
     public void setMoviePoster(String moviePoster) {
         this.moviePoster = moviePoster;
     }
+
+    public String getMovieReleaseDate() {return movieReleaseDate;  }
+    public void setMovieReleaseDate(String movieReleaseDate) {this.movieReleaseDate = movieReleaseDate;  }
 }

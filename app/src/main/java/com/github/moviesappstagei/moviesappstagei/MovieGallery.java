@@ -1,26 +1,28 @@
 package com.github.moviesappstagei.moviesappstagei;
 
-import android.content.Context;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.github.moviesappstagei.moviesappstagei.utilities.NetworkUtils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import android.util.Log;
-import android.widget.TextView;
+import java.util.concurrent.ExecutionException;
 
-import com.github.moviesappstagei.moviesappstagei.utilities.*;
-
-import org.w3c.dom.Text;
 
 public class MovieGallery extends AppCompatActivity {
 
@@ -30,60 +32,77 @@ public class MovieGallery extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_gallery);
+
         //Adding the RW reference
         RecyclerView mainRecycler = (RecyclerView) findViewById(R.id.main_recycler);
+
         //Adding layout manager
         GridLayoutManager gLayoutManager = new GridLayoutManager(this,2);
+
         //Binding to the xml tag
         mainRecycler.setLayoutManager(gLayoutManager);
+
         //Binding the adapter
         movieAdapter = new MainAdapter(this);
         mainRecycler.setAdapter(movieAdapter);
-        //fetchData();
-        // TODO - 1. Replace fetchData by Async FetchApiData
-        getApiData();
+
+        //populates the main gallery
+        try {fetchMainScreenData(NetworkUtils.PARAM_POP);} catch (JSONException exc) { exc.printStackTrace(); Log.v("me","shitface"); }
+
     }
 
-    private void getApiData() {
-        URL url = NetworkUtils.buildUrl("popular");
-        Log.v("me", url.toString());
-        new MoviesQueryTask().execute(url);
+    private String getApiData(String param) {
+        String JsonResult = null;
+        URL url = NetworkUtils.buildUrl(param);
+        try {
+            JsonResult = new MoviesQueryTask().execute(url).get();
+        } catch (ExecutionException | InterruptedException ei) {
+            ei.printStackTrace();
+        }
+        return JsonResult;
     }
+
 
     public class MoviesQueryTask extends AsyncTask<URL, Void, String> {
 
         @Override
         protected String doInBackground(URL... params) {
             URL searchUrl = params[0];
-            String githubSearchResults = null;
+            String urlResults = null;
             try {
-                githubSearchResults = NetworkUtils.getResponseFromHttpUrl(searchUrl);
+                urlResults = NetworkUtils.getResponseFromHttpUrl(searchUrl);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return githubSearchResults;
+            return urlResults;
         }
 
-        @Override
-        protected void onPostExecute(String githubSearchResults) {
-            if (githubSearchResults != null && !githubSearchResults.equals("")) {
-                TextView mTextView = (TextView) findViewById(R.id.mTextView);
-                mTextView.setText(githubSearchResults);
-            }
-        }
     }
 
-    //----
-
- /*
-        private void fetchData() {
+    private void fetchMainScreenData(String param) throws JSONException {
+        String mJsonString = getApiData(param);  //HTTP call
+        JSONObject myJson = new JSONObject(mJsonString);
+        JSONArray myData = myJson.getJSONArray(NetworkUtils.JSON_RESULTS);
         List<MovieObject> movies = new ArrayList<>();
-        for(int i = 0; i < 20; i++) {
-           movies.add(new MovieObject());
+
+        for (int i=0; i<myData.length();i++) {
+            String movieId = myData.getJSONObject(i).getString(NetworkUtils.JSON_ID);
+            String moviePoster = NetworkUtils.POSTERS_BASE_URL + myData.getJSONObject(i).getString(NetworkUtils.JSON_POSTER_PATH);
+            String movieDescription = myData.getJSONObject(i).getString(NetworkUtils.JSON_OVERVIEW);
+            String movieTitle = myData.getJSONObject(i).getString(NetworkUtils.JSON_TITLE);
+            String movieReleaseDate = myData.getJSONObject(i).getString(NetworkUtils.JSON_RELEASE_DATE);
+
+            MovieObject newMovie = new MovieObject();
+            newMovie.setMovieID(movieId);
+            newMovie.setMoviePoster(moviePoster);
+            newMovie.setMovieDescription(movieDescription);
+            newMovie.setMovieTitle(movieTitle);
+            newMovie.setMovieReleaseDate(movieReleaseDate);
+            movies.add(newMovie);
         }
         movieAdapter.setList(movies);
-        }
-*/
+    }
+
 
     //Adding Spinner for Pop/Rating sort
     @Override

@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    >
-
-
     <android.support.v7.widget.RecyclerView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="@layout/activity_movie_gallery"
+    tools:context=".MovieGallery"
+
     android:id="@+id/main_recycler"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
@@ -14,11 +12,3 @@
     android:scrollbarStyle="outsideOverlay">
 
     </android.support.v7.widget.RecyclerView>
-
-    <TextView
-        android:id="@+id/mTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
-
-</RelativeLayout>
