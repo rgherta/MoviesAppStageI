@@ -1,12 +1,15 @@
 package com.github.moviesappstagei.moviesappstagei;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.github.moviesappstagei.moviesappstagei.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -37,7 +40,18 @@ public class MainAdapter extends RecyclerView.Adapter<MovieViewHolder> {
     public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         boolean shouldAttachToParentImmediately = false;  //Performance optimization?
         View view = inflater.inflate(R.layout.item, parent, shouldAttachToParentImmediately);
-        MovieViewHolder viewHolder = new MovieViewHolder(view);
+        final MovieViewHolder viewHolder = new MovieViewHolder(view);
+
+        view.setOnClickListener(new OnClickListener(){
+            @Override
+            public void onClick(View mView) {
+                int position = viewHolder.getAdapterPosition();
+                Intent intent = new Intent(context, DetailsActivity.class);
+                intent.putExtra(NetworkUtils.MOVIE_EXTRA, movieList.get(position));
+                context.startActivity(intent);
+            }
+        });
+
         return viewHolder;
     }
 

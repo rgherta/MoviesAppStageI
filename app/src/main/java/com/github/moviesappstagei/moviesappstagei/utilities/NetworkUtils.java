@@ -28,6 +28,9 @@ public class NetworkUtils {
     public static final String JSON_OVERVIEW = "overview";
     public static final String JSON_TITLE = "title";
     public static final String JSON_RELEASE_DATE = "release_date";
+    public static final String JSON_VOTE_AVERAGE = "vote_average";
+    public static final String MOVIE_EXTRA = "Movie";
+
     public static final String POSTERS_BASE_URL = "http://image.tmdb.org/t/p/w185/";
 
     public static URL buildUrl(String apiType) {

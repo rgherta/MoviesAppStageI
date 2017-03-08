@@ -8,6 +8,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
@@ -91,6 +93,7 @@ public class MovieGallery extends AppCompatActivity {
             String movieDescription = myData.getJSONObject(i).getString(NetworkUtils.JSON_OVERVIEW);
             String movieTitle = myData.getJSONObject(i).getString(NetworkUtils.JSON_TITLE);
             String movieReleaseDate = myData.getJSONObject(i).getString(NetworkUtils.JSON_RELEASE_DATE);
+            String movieVoteAverage = myData.getJSONObject(i).getString(NetworkUtils.JSON_VOTE_AVERAGE);
 
             MovieObject newMovie = new MovieObject();
             newMovie.setMovieID(movieId);
@@ -98,6 +101,7 @@ public class MovieGallery extends AppCompatActivity {
             newMovie.setMovieDescription(movieDescription);
             newMovie.setMovieTitle(movieTitle);
             newMovie.setMovieReleaseDate(movieReleaseDate);
+            newMovie.setVoteAverage(movieVoteAverage);
             movies.add(newMovie);
         }
         movieAdapter.setList(movies);
@@ -117,10 +121,21 @@ public class MovieGallery extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String ok = adapterView.getSelectedItem().toString();
+                Log.v("Roman", ok);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) { }
+        });
+
+
         return true;
     }
     // TODO - Add onAction override for Spinner
-
 
 
 }
