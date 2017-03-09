@@ -1,5 +1,8 @@
 package com.github.moviesappstagei.moviesappstagei;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.github.moviesappstagei.moviesappstagei.utilities.NetworkUtils;
 
@@ -24,9 +28,33 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-
 public class MovieGallery extends AppCompatActivity {
 
+    //Hardcoded Strings
+    public static String MOVIES_BASE_URL;
+    public static String QUERY_PARAM;
+    public static String MDB_KEY;
+
+    public static String MENU_POP;
+    public static String PARAM_POP;
+    public static String MENU_RATED;
+    public static String PARAM_RATED;
+
+    public static String JSON_RESULTS;
+    public static String JSON_ID;
+    public static String JSON_POSTER_PATH;
+    public static String JSON_OVERVIEW;
+    public static String JSON_TITLE;
+    public static String JSON_RELEASE_DATE;
+    public static String JSON_VOTE_AVERAGE;
+    public static String MOVIE_EXTRA;
+
+    public static String POSTERS_BASE_URL;
+    public static String ERROR_PARCELABLE;
+    public static String ERROR_INTERNET;
+    public static String VOTES_LABEL;
+
+    //Main Objects
     MainAdapter movieAdapter;
     RecyclerView mainRecycler;
 
@@ -34,6 +62,26 @@ public class MovieGallery extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_gallery);
+
+        MOVIES_BASE_URL = getString(R.string.movies_base_url);
+        QUERY_PARAM = getString(R.string.query_param);
+        MDB_KEY = getString(R.string.mdb_key);
+        MENU_POP = getString(R.string.menu_pop);
+        PARAM_POP = getString(R.string.param_pop);
+        MENU_RATED = getString(R.string.menu_rated);
+        PARAM_RATED = getString(R.string.param_rated);
+        JSON_RESULTS = getString(R.string.json_results);
+        JSON_ID = getString(R.string.json_id);
+        JSON_POSTER_PATH = getString(R.string.json_poster_path);
+        JSON_OVERVIEW = getString(R.string.json_overview);
+        JSON_TITLE = getString(R.string.json_title);
+        JSON_RELEASE_DATE = getString(R.string.json_release_date);
+        JSON_VOTE_AVERAGE = getString(R.string.json_vote_average);
+        MOVIE_EXTRA = getString(R.string.movie_extra);
+        POSTERS_BASE_URL = getString(R.string.posters_base_url);
+        ERROR_PARCELABLE = getString(R.string.error_parcelable);
+        ERROR_INTERNET = getString(R.string.error_internet);
+        VOTES_LABEL = getString(R.string.votes_label);
 
         //Adding the RW reference
         mainRecycler = (RecyclerView) findViewById(R.id.main_recycler);
@@ -48,7 +96,7 @@ public class MovieGallery extends AppCompatActivity {
         movieAdapter = new MainAdapter(this);
         mainRecycler.setAdapter(movieAdapter);
 
-        //populates the main gallery
+        //populates the main gallery - done from the Spinner event
         //try {fetchMainScreenData(NetworkUtils.PARAM_POP);} catch (JSONException exc) { exc.printStackTrace(); }
 
     }
@@ -56,12 +104,12 @@ public class MovieGallery extends AppCompatActivity {
     private String getApiData(String param) {
         String JsonResult = null;
         URL url = NetworkUtils.buildUrl(param);
-        try {
-            JsonResult = new MoviesQueryTask().execute(url).get();
-        } catch (ExecutionException | InterruptedException ei) {
-            ei.printStackTrace();
-        }
-        return JsonResult;
+            try {
+                JsonResult = new MoviesQueryTask().execute(url).get();
+            } catch (ExecutionException | InterruptedException ei) {
+                ei.printStackTrace();
+            }
+            return JsonResult;
     }
 
 
@@ -81,30 +129,36 @@ public class MovieGallery extends AppCompatActivity {
 
     }
 
+    //Some intuitive help on ArrayList behaviour found on Jose Mateo blog https://goo.gl/087425
     private void fetchMainScreenData(String param) throws JSONException {
-        String mJsonString = getApiData(param);  //HTTP call
-        JSONObject myJson = new JSONObject(mJsonString);
-        JSONArray myData = myJson.getJSONArray(NetworkUtils.JSON_RESULTS);
-        List<MovieObject> movies = new ArrayList<>();
 
-        for (int i=0; i<myData.length();i++) {
-            String movieId = myData.getJSONObject(i).getString(NetworkUtils.JSON_ID);
-            String moviePoster = NetworkUtils.POSTERS_BASE_URL + myData.getJSONObject(i).getString(NetworkUtils.JSON_POSTER_PATH);
-            String movieDescription = myData.getJSONObject(i).getString(NetworkUtils.JSON_OVERVIEW);
-            String movieTitle = myData.getJSONObject(i).getString(NetworkUtils.JSON_TITLE);
-            String movieReleaseDate = myData.getJSONObject(i).getString(NetworkUtils.JSON_RELEASE_DATE);
-            String movieVoteAverage = myData.getJSONObject(i).getString(NetworkUtils.JSON_VOTE_AVERAGE);
+        if(isOnline()) {
+            String mJsonString = getApiData(param);  //HTTP call
+            JSONObject myJson = new JSONObject(mJsonString);
+            JSONArray myData = myJson.getJSONArray(JSON_RESULTS);
+            List<MovieObject> movies = new ArrayList<>();
 
-            MovieObject newMovie = new MovieObject();
-            newMovie.setMovieID(movieId);
-            newMovie.setMoviePoster(moviePoster);
-            newMovie.setMovieDescription(movieDescription);
-            newMovie.setMovieTitle(movieTitle);
-            newMovie.setMovieReleaseDate(movieReleaseDate);
-            newMovie.setVoteAverage(movieVoteAverage);
-            movies.add(newMovie);
+            for (int i = 0; i < myData.length(); i++) {
+                String movieId = myData.getJSONObject(i).getString(JSON_ID);
+                String moviePoster = POSTERS_BASE_URL + myData.getJSONObject(i).getString(JSON_POSTER_PATH);
+                String movieDescription = myData.getJSONObject(i).getString(JSON_OVERVIEW);
+                String movieTitle = myData.getJSONObject(i).getString(JSON_TITLE);
+                String movieReleaseDate = myData.getJSONObject(i).getString(JSON_RELEASE_DATE);
+                String movieVoteAverage = myData.getJSONObject(i).getString(JSON_VOTE_AVERAGE);
+
+                MovieObject newMovie = new MovieObject();
+                newMovie.setMovieID(movieId);
+                newMovie.setMoviePoster(moviePoster);
+                newMovie.setMovieDescription(movieDescription);
+                newMovie.setMovieTitle(movieTitle);
+                newMovie.setMovieReleaseDate(movieReleaseDate);
+                newMovie.setVoteAverage(movieVoteAverage);
+                movies.add(newMovie);
+            }
+            movieAdapter.setList(movies);
+        } else {
+            Toast.makeText(this, ERROR_INTERNET, Toast.LENGTH_SHORT).show();
         }
-        movieAdapter.setList(movies);
     }
 
 
@@ -122,14 +176,15 @@ public class MovieGallery extends AppCompatActivity {
 
         spinner.setAdapter(adapter);
 
+        //Had to read Android Developer documentation to understand how this works
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String selectedOption = adapterView.getSelectedItem().toString();
-                if (selectedOption.equals(NetworkUtils.MENU_POP)) {
-                    try {fetchMainScreenData(NetworkUtils.PARAM_POP); mainRecycler.scrollToPosition(0);} catch (JSONException exc) { exc.printStackTrace(); }
-                } else if(selectedOption.equals(NetworkUtils.MENU_RATED)){
-                    try {fetchMainScreenData(NetworkUtils.PARAM_RATED);mainRecycler.scrollToPosition(0);} catch (JSONException exc) { exc.printStackTrace(); }
+                if (selectedOption.equals(MENU_POP)) {
+                    try {fetchMainScreenData(PARAM_POP); mainRecycler.scrollToPosition(0);} catch (JSONException exc) { exc.printStackTrace(); }
+                } else if(selectedOption.equals(MENU_RATED)){
+                    try {fetchMainScreenData(PARAM_RATED);mainRecycler.scrollToPosition(0);} catch (JSONException exc) { exc.printStackTrace(); }
                 }
             }
 
@@ -141,12 +196,15 @@ public class MovieGallery extends AppCompatActivity {
         return true;
     }
 
+    //From StackOverflow https://goo.gl/BAoDL2 as per Udacity instruction.
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnected();
+    }
+
 
 }
-
-
-
-
-
 
 

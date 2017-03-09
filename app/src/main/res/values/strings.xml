@@ -4,4 +4,26 @@
         <item>Most Popular</item>
         <item>Highest Rating</item>
     </string-array>
+    <string name="movies_base_url">http://api.themoviedb.org/3/movie/</string>
+    <string name="query_param">api_key</string>
+    <string name="mdb_key">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</string>
+    <string name="menu_pop">Most Popular</string>
+    <string name="param_pop">popular</string>
+    <string name="menu_rated">Highest Rating</string>
+    <string name="param_rated">top_rated</string>
+    <string name="json_results">results</string>
+    <string name="json_id">id</string>
+    <string name="json_poster_path">poster_path</string>
+    <string name="json_overview">overview</string>
+    <string name="json_title">title</string>
+    <string name="json_release_date">release_date</string>
+    <string name="json_vote_average">vote_average</string>
+    <string name="movie_extra">Movie</string>
+    <string name="posters_base_url">http://image.tmdb.org/t/p/w185/</string>
+    <string name="votes_label">" avg votes"</string>
+
+    <string name="error_parcelable">No movie parcelable intent detected</string>
+    <string name="error_internet">No Internet Connection</string>
+
+
 </resources>

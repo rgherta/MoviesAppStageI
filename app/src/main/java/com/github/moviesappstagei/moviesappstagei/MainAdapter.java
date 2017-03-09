@@ -9,11 +9,12 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.github.moviesappstagei.moviesappstagei.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.github.moviesappstagei.moviesappstagei.MovieGallery.MOVIE_EXTRA;
 
 /**
  * Created by Grossman on 2/19/2017.
@@ -47,7 +48,7 @@ public class MainAdapter extends RecyclerView.Adapter<MovieViewHolder> {
             public void onClick(View mView) {
                 int position = viewHolder.getAdapterPosition();
                 Intent intent = new Intent(context, DetailsActivity.class);
-                intent.putExtra(NetworkUtils.MOVIE_EXTRA, movieList.get(position));
+                intent.putExtra(MOVIE_EXTRA, movieList.get(position));
                 context.startActivity(intent);
             }
         });
