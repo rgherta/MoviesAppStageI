@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +28,7 @@ import java.util.concurrent.ExecutionException;
 public class MovieGallery extends AppCompatActivity {
 
     MainAdapter movieAdapter;
+    RecyclerView mainRecycler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +36,7 @@ public class MovieGallery extends AppCompatActivity {
         setContentView(R.layout.activity_movie_gallery);
 
         //Adding the RW reference
-        RecyclerView mainRecycler = (RecyclerView) findViewById(R.id.main_recycler);
+        mainRecycler = (RecyclerView) findViewById(R.id.main_recycler);
 
         //Adding layout manager
         GridLayoutManager gLayoutManager = new GridLayoutManager(this,2);
@@ -49,7 +49,7 @@ public class MovieGallery extends AppCompatActivity {
         mainRecycler.setAdapter(movieAdapter);
 
         //populates the main gallery
-        try {fetchMainScreenData(NetworkUtils.PARAM_POP);} catch (JSONException exc) { exc.printStackTrace(); Log.v("me","shitface"); }
+        //try {fetchMainScreenData(NetworkUtils.PARAM_POP);} catch (JSONException exc) { exc.printStackTrace(); }
 
     }
 
@@ -121,11 +121,16 @@ public class MovieGallery extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinner.setAdapter(adapter);
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String ok = adapterView.getSelectedItem().toString();
-                Log.v("Roman", ok);
+                String selectedOption = adapterView.getSelectedItem().toString();
+                if (selectedOption.equals(NetworkUtils.MENU_POP)) {
+                    try {fetchMainScreenData(NetworkUtils.PARAM_POP); mainRecycler.scrollToPosition(0);} catch (JSONException exc) { exc.printStackTrace(); }
+                } else if(selectedOption.equals(NetworkUtils.MENU_RATED)){
+                    try {fetchMainScreenData(NetworkUtils.PARAM_RATED);mainRecycler.scrollToPosition(0);} catch (JSONException exc) { exc.printStackTrace(); }
+                }
             }
 
             @Override
@@ -135,7 +140,6 @@ public class MovieGallery extends AppCompatActivity {
 
         return true;
     }
-    // TODO - Add onAction override for Spinner
 
 
 }
