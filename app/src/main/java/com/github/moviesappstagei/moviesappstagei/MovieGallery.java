@@ -26,7 +26,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+
+/**
+ * Created by RGherta on 2/19/2017.
+ */
 
 public class MovieGallery extends AppCompatActivity {
 
@@ -95,45 +98,12 @@ public class MovieGallery extends AppCompatActivity {
         //Binding the adapter
         movieAdapter = new MainAdapter(this);
         mainRecycler.setAdapter(movieAdapter);
-
-        //populates the main gallery - done from the Spinner event
-        //try {fetchMainScreenData(NetworkUtils.PARAM_POP);} catch (JSONException exc) { exc.printStackTrace(); }
-
     }
 
-    private String getApiData(String param) {
-        String JsonResult = null;
-        URL url = NetworkUtils.buildUrl(param);
-            try {
-                JsonResult = new MoviesQueryTask().execute(url).get();
-            } catch (ExecutionException | InterruptedException ei) {
-                ei.printStackTrace();
-            }
-            return JsonResult;
-    }
-
-
-    public class MoviesQueryTask extends AsyncTask<URL, Void, String> {
-
-        @Override
-        protected String doInBackground(URL... params) {
-            URL searchUrl = params[0];
-            String urlResults = null;
-            try {
-                urlResults = NetworkUtils.getResponseFromHttpUrl(searchUrl);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return urlResults;
-        }
-
-    }
-
-    //Some intuitive help on ArrayList behaviour found on Jose Mateo blog https://goo.gl/087425
-    private void fetchMainScreenData(String param) throws JSONException {
+    //Some intuitive help on Parcelable/ArrayList behaviour found on Jose Mateo blog https://goo.gl/087425
+    public void fetchMainScreenData(String mJsonString) throws JSONException {
 
         if(isOnline()) {
-            String mJsonString = getApiData(param);  //HTTP call
             JSONObject myJson = new JSONObject(mJsonString);
             JSONArray myData = myJson.getJSONArray(JSON_RESULTS);
             List<MovieObject> movies = new ArrayList<>();
@@ -161,7 +131,6 @@ public class MovieGallery extends AppCompatActivity {
         }
     }
 
-
     //Adding Spinner for Pop/Rating sort
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -176,24 +145,49 @@ public class MovieGallery extends AppCompatActivity {
 
         spinner.setAdapter(adapter);
 
-        //Had to read Android Developer documentation to understand how this works
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String selectedOption = adapterView.getSelectedItem().toString();
                 if (selectedOption.equals(MENU_POP)) {
-                    try {fetchMainScreenData(PARAM_POP); mainRecycler.scrollToPosition(0);} catch (JSONException exc) { exc.printStackTrace(); }
+                    URL newUrl = NetworkUtils.buildUrl(PARAM_POP);
+                    new MoviesQueryTask().execute(newUrl);
+                    mainRecycler.scrollToPosition(0);
                 } else if(selectedOption.equals(MENU_RATED)){
-                    try {fetchMainScreenData(PARAM_RATED);mainRecycler.scrollToPosition(0);} catch (JSONException exc) { exc.printStackTrace(); }
+                    URL newUrl = NetworkUtils.buildUrl(PARAM_RATED);
+                    new MoviesQueryTask().execute(newUrl);
+                    mainRecycler.scrollToPosition(0);
                 }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) { }
         });
-
-
         return true;
+    }
+
+    class MoviesQueryTask extends AsyncTask<URL, Void, String> {
+
+        @Override
+        protected String doInBackground(URL... params) {
+            URL searchUrl = params[0];
+            String urlResults = null;
+            try {
+                urlResults = NetworkUtils.getResponseFromHttpUrl(searchUrl);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return urlResults;
+        }
+
+        @Override
+        protected void onPostExecute(String urlResults) {
+            if (urlResults != null && !urlResults.equals("")) {
+                try {fetchMainScreenData(urlResults);} catch (JSONException e) { e.printStackTrace();
+                }
+            }
+        }
+
     }
 
     //From StackOverflow https://goo.gl/BAoDL2 as per Udacity instruction.
@@ -203,7 +197,6 @@ public class MovieGallery extends AppCompatActivity {
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnected();
     }
-
 
 }
 

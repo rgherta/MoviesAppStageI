@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.github.moviesappstagei.moviesappstagei.DetailsActivity">
+    tools:context="com.github.moviesappstagei.moviesappstagei.DetailsActivity"
+    android:scrollbars="vertical">
 
 <LinearLayout
     android:layout_width="match_parent"
@@ -13,41 +14,62 @@
     <ImageView
         android:id="@+id/detail_image"
         android:layout_width="match_parent"
-        android:layout_height="160dp"
-        android:scaleType="centerCrop"/>
+        android:layout_height="@dimen/details_img_height"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/movie_header" />
 
     <TextView
         android:id="@+id/detail_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:textSize="24sp"
+        android:padding="@dimen/title_padding"
+        android:textSize="@dimen/title_size"
         android:textStyle="bold" />
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    <TextView
-        android:id="@+id/detail_release_date"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:textStyle="italic"
-        android:textSize="16sp" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/detail_release_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/details_padding"
+            android:textStyle="italic"
+            android:textSize="@dimen/details_size" />
 
         <TextView
             android:id="@+id/detail_average_vote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/details_padding"
+            android:paddingTop="@dimen/details_padding"
+            android:paddingLeft="@dimen/details_padding"
+            android:paddingRight="@dimen/padding_votes_label"
+            android:textSize="@dimen/details_size" />
+
+        <TextView
+            android:id="@+id/votes_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:textSize="16sp" />
+            android:paddingTop="@dimen/details_padding"
+            android:paddingBottom="@dimen/details_padding"
+            android:paddingLeft="@dimen/padding_votes_label"
+            android:textSize="@dimen/details_size"
+            android:text="@string/votes_label"/>
+
 
     </LinearLayout>
+
+
     <TextView
         android:id="@+id/detail_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:textSize="20sp" />
+        android:padding="@dimen/description_padding"
+        android:textSize="@dimen/description_size" />
 
 </LinearLayout>
-</ScrollView>
+
+</android.support.v4.widget.NestedScrollView>

@@ -10,8 +10,10 @@ import com.squareup.picasso.Picasso;
 
 import static com.github.moviesappstagei.moviesappstagei.MovieGallery.ERROR_PARCELABLE;
 import static com.github.moviesappstagei.moviesappstagei.MovieGallery.MOVIE_EXTRA;
-import static com.github.moviesappstagei.moviesappstagei.MovieGallery.VOTES_LABEL;
 
+/**
+ * Created by RGherta on 2/19/2017.
+ */
 
 public class DetailsActivity extends AppCompatActivity {
 
@@ -31,7 +33,7 @@ public class DetailsActivity extends AppCompatActivity {
             MovieObject myMovie = startIntent.getParcelableExtra(MOVIE_EXTRA);
             title.setText(myMovie.getMovieTitle());
             releaseDate.setText(myMovie.getMovieReleaseDate());
-            averageVote.setText(myMovie.getVoteAverage() + VOTES_LABEL);
+            averageVote.setText(myMovie.getVoteAverage());
             detailDescription.setText(myMovie.getMovieDescription());
 
             Picasso.with(DetailsActivity.this)
@@ -43,6 +45,8 @@ public class DetailsActivity extends AppCompatActivity {
             throw new IllegalArgumentException(ERROR_PARCELABLE);
         }
 
-
+        //Adding UP action button
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
+
 }

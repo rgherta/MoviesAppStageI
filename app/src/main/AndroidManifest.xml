@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-sdk android:minSdkVersion="5.0"/>
 
     <application
         android:allowBackup="true"
@@ -11,14 +12,25 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MovieGallery">
+
+        <activity android:name="com.github.moviesappstagei.moviesappstagei.MovieGallery"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DetailsActivity"></activity>
+
+        <activity android:name="com.github.moviesappstagei.moviesappstagei.DetailsActivity"
+            android:parentActivityName="com.github.moviesappstagei.moviesappstagei.MovieGallery"
+            android:label="@string/details_activity_name">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.github.moviesappstagei.moviesappstagei.MovieGallery" />
+        </activity>
+
+
     </application>
 
 </manifest>

@@ -17,7 +17,7 @@ import java.util.List;
 import static com.github.moviesappstagei.moviesappstagei.MovieGallery.MOVIE_EXTRA;
 
 /**
- * Created by Grossman on 2/19/2017.
+ * Created by RGHERTA on 2/19/2017.
  */
 
 
@@ -61,6 +61,8 @@ public class MainAdapter extends RecyclerView.Adapter<MovieViewHolder> {
         MovieObject movie = movieList.get(position);
         Picasso.with(context)
                 .load(movie.getMoviePoster())
+                .placeholder(R.mipmap.ic_launcher)
+                .error(R.mipmap.ic_launcher)
                 .into(holder.imgView);
     }
 

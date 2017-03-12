@@ -1,12 +1,19 @@
 <resources>
+
+    <!-- App title -->
     <string name="app_name">My Movies (Stg I)</string>
+    <string name="details_activity_name">Movie Details</string>
+
+    <!-- Main Activity Spinner Choices -->
     <string-array name="spinner_choices">
         <item>Most Popular</item>
         <item>Highest Rating</item>
     </string-array>
+
+    <!-- Api Parameters -->
     <string name="movies_base_url">http://api.themoviedb.org/3/movie/</string>
     <string name="query_param">api_key</string>
-    <string name="mdb_key">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</string>
+    <string name="mdb_key">4d2d0514584191012c556bb5c1e78cef</string>
     <string name="menu_pop">Most Popular</string>
     <string name="param_pop">popular</string>
     <string name="menu_rated">Highest Rating</string>
@@ -22,8 +29,12 @@
     <string name="posters_base_url">http://image.tmdb.org/t/p/w185/</string>
     <string name="votes_label">" avg votes"</string>
 
+    <!-- Errors -->
     <string name="error_parcelable">No movie parcelable intent detected</string>
     <string name="error_internet">No Internet Connection</string>
+
+    <!-- Others -->
+    <string name="movie_header">Movie Image Header</string>
 
 
 </resources>
