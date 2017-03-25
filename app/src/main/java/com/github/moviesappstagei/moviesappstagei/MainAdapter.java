@@ -61,7 +61,7 @@ public class MainAdapter extends RecyclerView.Adapter<MovieViewHolder> {
         MovieObject movie = movieList.get(position);
         Picasso.with(context)
                 .load(movie.getMoviePoster())
-                .placeholder(R.mipmap.ic_launcher)
+                //.placeholder(R.mipmap.ic_launcher)
                 .error(R.mipmap.ic_launcher)
                 .into(holder.imgView);
     }

@@ -13,7 +13,7 @@
     <!-- Api Parameters -->
     <string name="movies_base_url">http://api.themoviedb.org/3/movie/</string>
     <string name="query_param">api_key</string>
-    <string name="mdb_key">XXXXXXXXXXXXXXXXXXXXXXXXX</string>
+    <string name="mdb_key">4d2d0514584191012c556bb5c1e78cef</string>
     <string name="menu_pop">Most Popular</string>
     <string name="param_pop">popular</string>
     <string name="menu_rated">Highest Rating</string>
