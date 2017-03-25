@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -89,8 +90,16 @@ public class MovieGallery extends AppCompatActivity {
         //Adding the RW reference
         mainRecycler = (RecyclerView) findViewById(R.id.main_recycler);
 
-        //Adding layout manager
-        GridLayoutManager gLayoutManager = new GridLayoutManager(this,2);
+        //Calculating number of items per row
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        Integer widthDivider = 600; //TODO: Hardcode
+        int width = displayMetrics.widthPixels;
+        int nColumns = width / widthDivider;
+        if (nColumns < 2) nColumns = 2; //TODO: Hardcode
+
+        //Adding LayoutManager
+        GridLayoutManager gLayoutManager = new GridLayoutManager(this, nColumns);
 
         //Binding to the xml tag
         mainRecycler.setLayoutManager(gLayoutManager);
@@ -197,6 +206,7 @@ public class MovieGallery extends AppCompatActivity {
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnected();
     }
+
 
 }
 
