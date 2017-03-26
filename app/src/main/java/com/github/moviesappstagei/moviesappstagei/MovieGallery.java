@@ -3,8 +3,9 @@ package com.github.moviesappstagei.moviesappstagei;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,8 +24,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +31,7 @@ import java.util.List;
  * Created by RGherta on 2/19/2017.
  */
 
-public class MovieGallery extends AppCompatActivity {
+public class MovieGallery extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
 
     //Hardcoded Strings
     public static String MOVIES_BASE_URL;
@@ -57,6 +56,15 @@ public class MovieGallery extends AppCompatActivity {
     public static String ERROR_PARCELABLE;
     public static String ERROR_INTERNET;
     public static String VOTES_LABEL;
+
+    public static int ASYNCTASKLOADER_ID;
+    public static String BUNDLE_EXTRA;
+
+    private String newUrlString;
+    private LoaderManager.LoaderCallbacks<String> callback;
+    private LoaderManager loaderManager;
+    private Loader<String> asyncTaskLoader;
+    private Bundle queryBundle;
 
     //Main Objects
     MainAdapter movieAdapter;
@@ -86,6 +94,8 @@ public class MovieGallery extends AppCompatActivity {
         ERROR_PARCELABLE = getString(R.string.error_parcelable);
         ERROR_INTERNET = getString(R.string.error_internet);
         VOTES_LABEL = getString(R.string.votes_label);
+        ASYNCTASKLOADER_ID = 22; // TODO Hardcode
+        BUNDLE_EXTRA = "BUNDLE_EXTRA"; // TODO HARDCODE
 
         //Adding the RW reference
         mainRecycler = (RecyclerView) findViewById(R.id.main_recycler);
@@ -107,7 +117,117 @@ public class MovieGallery extends AppCompatActivity {
         //Binding the adapter
         movieAdapter = new MainAdapter(this);
         mainRecycler.setAdapter(movieAdapter);
+
+        //LoaderCallback
+        callback = MovieGallery.this;
+        newUrlString = NetworkUtils.buildUrl(PARAM_POP);
+
+        //Using LoaderManager
+        queryBundle = new Bundle();
+        queryBundle.putString(BUNDLE_EXTRA, newUrlString);
+
+        loaderManager = getSupportLoaderManager();
+        asyncTaskLoader = loaderManager.getLoader(ASYNCTASKLOADER_ID);
+        if(asyncTaskLoader == null) {
+            loaderManager.initLoader(ASYNCTASKLOADER_ID, queryBundle, callback);
+        } else {
+            loaderManager.restartLoader(ASYNCTASKLOADER_ID, queryBundle, callback);
+        }
     }
+
+
+    //Adding Spinner for Pop/Rating sort
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+
+        MenuItem item = menu.findItem(R.id.spinner);
+        Spinner spinner = (Spinner) item.getActionView();
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.spinner_choices, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinner.setAdapter(adapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String selectedOption = adapterView.getSelectedItem().toString();
+                if (selectedOption.equals(MENU_POP)) {
+                    newUrlString = NetworkUtils.buildUrl(PARAM_POP);
+                    queryBundle = new Bundle();
+                    queryBundle.putString(BUNDLE_EXTRA, newUrlString);
+                    if(asyncTaskLoader != null) {
+                        loaderManager.initLoader(ASYNCTASKLOADER_ID, queryBundle, callback);
+                    } else {
+                        loaderManager.restartLoader(ASYNCTASKLOADER_ID, queryBundle, callback);
+                    }
+                    mainRecycler.scrollToPosition(0);
+
+                } else if(selectedOption.equals(MENU_RATED)){
+                    newUrlString = NetworkUtils.buildUrl(PARAM_RATED);
+                    queryBundle = new Bundle();
+                    queryBundle.putString(BUNDLE_EXTRA, newUrlString);
+                    if(asyncTaskLoader != null) {
+                        loaderManager.initLoader(ASYNCTASKLOADER_ID, queryBundle, callback);
+                    } else {
+                        loaderManager.restartLoader(ASYNCTASKLOADER_ID, queryBundle, callback);
+                    }
+                    mainRecycler.scrollToPosition(0);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) { }
+        });
+        return true;
+    }
+
+    @Override
+    public Loader<String> onCreateLoader(int id, Bundle args) {
+        return new MovieLoader(this, args.getString(BUNDLE_EXTRA));
+    }
+
+    @Override
+    public void onLoadFinished(Loader<String> loader, String data) {
+        if (data != null && !data.equals("")) {
+            try {
+                fetchMainScreenData(data);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<String> loader) {    }
+
+
+
+/*    class MoviesQueryTask extends AsyncTask<URL, Void, String> {
+
+        @Override
+        protected String doInBackground(URL... params) {
+            URL searchUrl = params[0];
+            String urlResults = null;
+            try {
+                urlResults = NetworkUtils.getResponseFromHttpUrl(searchUrl);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return urlResults;
+        }
+
+        @Override
+        protected void onPostExecute(String urlResults) {
+            if (urlResults != null && !urlResults.equals("")) {
+                try {fetchMainScreenData(urlResults);} catch (JSONException e) { e.printStackTrace();
+                }
+            }
+        }
+
+    }*/
 
     //Some intuitive help on Parcelable/ArrayList behaviour found on Jose Mateo blog https://goo.gl/087425
     public void fetchMainScreenData(String mJsonString) throws JSONException {
@@ -138,65 +258,6 @@ public class MovieGallery extends AppCompatActivity {
         } else {
             Toast.makeText(this, ERROR_INTERNET, Toast.LENGTH_SHORT).show();
         }
-    }
-
-    //Adding Spinner for Pop/Rating sort
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-
-        MenuItem item = menu.findItem(R.id.spinner);
-        Spinner spinner = (Spinner) item.getActionView();
-
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.spinner_choices, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        spinner.setAdapter(adapter);
-
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String selectedOption = adapterView.getSelectedItem().toString();
-                if (selectedOption.equals(MENU_POP)) {
-                    URL newUrl = NetworkUtils.buildUrl(PARAM_POP);
-                    new MoviesQueryTask().execute(newUrl);
-                    mainRecycler.scrollToPosition(0);
-                } else if(selectedOption.equals(MENU_RATED)){
-                    URL newUrl = NetworkUtils.buildUrl(PARAM_RATED);
-                    new MoviesQueryTask().execute(newUrl);
-                    mainRecycler.scrollToPosition(0);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) { }
-        });
-        return true;
-    }
-
-    class MoviesQueryTask extends AsyncTask<URL, Void, String> {
-
-        @Override
-        protected String doInBackground(URL... params) {
-            URL searchUrl = params[0];
-            String urlResults = null;
-            try {
-                urlResults = NetworkUtils.getResponseFromHttpUrl(searchUrl);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return urlResults;
-        }
-
-        @Override
-        protected void onPostExecute(String urlResults) {
-            if (urlResults != null && !urlResults.equals("")) {
-                try {fetchMainScreenData(urlResults);} catch (JSONException e) { e.printStackTrace();
-                }
-            }
-        }
-
     }
 
     //From StackOverflow https://goo.gl/BAoDL2 as per Udacity instruction.

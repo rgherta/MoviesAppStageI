@@ -20,7 +20,7 @@ import static com.github.moviesappstagei.moviesappstagei.MovieGallery.QUERY_PARA
 public class NetworkUtils {
 
 
-    public static URL buildUrl(String apiType) {
+    public static String buildUrl(String apiType) {
         Uri builtUri = Uri.parse(MOVIES_BASE_URL).buildUpon()
                 .appendPath(apiType)
                 .appendQueryParameter(QUERY_PARAM, MDB_KEY)
@@ -32,12 +32,13 @@ public class NetworkUtils {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        return url;
+        return url.toString();
 
     }
 
-    public static String getResponseFromHttpUrl(URL url) throws IOException {
-        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+    public static String getResponseFromHttpUrl(String url) throws IOException {
+        URL urlB = new URL(url);
+        HttpURLConnection urlConnection = (HttpURLConnection) urlB.openConnection();
         urlConnection.setConnectTimeout(5000);
         urlConnection.setReadTimeout(10000);
         try {

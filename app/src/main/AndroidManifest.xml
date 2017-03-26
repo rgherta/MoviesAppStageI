@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name="com.github.moviesappstagei.moviesappstagei.MovieGallery"
+        <activity android:name=".MovieGallery"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,13 +21,13 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.github.moviesappstagei.moviesappstagei.DetailsActivity"
-            android:parentActivityName="com.github.moviesappstagei.moviesappstagei.MovieGallery"
+        <activity android:name=".DetailsActivity"
+            android:parentActivityName=".MovieGallery"
             android:label="@string/details_activity_name">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.github.moviesappstagei.moviesappstagei.MovieGallery" />
+                android:value=".MovieGallery" />
         </activity>
 
 

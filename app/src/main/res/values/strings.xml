@@ -1,7 +1,7 @@
 <resources>
 
     <!-- App title -->
-    <string name="app_name">My Movies (Stg I)</string>
+    <string name="app_name">My Movies</string>
     <string name="details_activity_name">Movie Details</string>
 
     <!-- Main Activity Spinner Choices -->
