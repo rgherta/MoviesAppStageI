@@ -12,7 +12,7 @@ import static com.github.moviesappstagei.moviesappstagei.MovieGallery.ERROR_PARC
 import static com.github.moviesappstagei.moviesappstagei.MovieGallery.MOVIE_EXTRA;
 
 /**
- * Created by RGherta on 2/19/2017.
+ * Created by RGHERTA on 2/19/2017.
  */
 
 public class DetailsActivity extends AppCompatActivity {

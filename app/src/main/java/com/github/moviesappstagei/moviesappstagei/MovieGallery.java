@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by RGherta on 2/19/2017.
+ * Created by RGHERTA on 2/19/2017.
  */
 
 public class MovieGallery extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
@@ -94,8 +94,8 @@ public class MovieGallery extends AppCompatActivity implements LoaderManager.Loa
         ERROR_PARCELABLE = getString(R.string.error_parcelable);
         ERROR_INTERNET = getString(R.string.error_internet);
         VOTES_LABEL = getString(R.string.votes_label);
-        ASYNCTASKLOADER_ID = 22; // TODO Hardcode
-        BUNDLE_EXTRA = "BUNDLE_EXTRA"; // TODO HARDCODE
+        ASYNCTASKLOADER_ID = getResources().getInteger(R.integer.loader_id);
+        BUNDLE_EXTRA = getString(R.string.bundle_name);
 
         //Adding the RW reference
         mainRecycler = (RecyclerView) findViewById(R.id.main_recycler);
@@ -103,10 +103,10 @@ public class MovieGallery extends AppCompatActivity implements LoaderManager.Loa
         //Calculating number of items per row
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        Integer widthDivider = 600; //TODO: Hardcode
+        int widthDivider = getResources().getInteger(R.integer.width_divider);
         int width = displayMetrics.widthPixels;
         int nColumns = width / widthDivider;
-        if (nColumns < 2) nColumns = 2; //TODO: Hardcode
+        if (nColumns < getResources().getInteger(R.integer.grid_col)) nColumns = getResources().getInteger(R.integer.grid_col);
 
         //Adding LayoutManager
         GridLayoutManager gLayoutManager = new GridLayoutManager(this, nColumns);
@@ -158,7 +158,8 @@ public class MovieGallery extends AppCompatActivity implements LoaderManager.Loa
                     newUrlString = NetworkUtils.buildUrl(PARAM_POP);
                     queryBundle = new Bundle();
                     queryBundle.putString(BUNDLE_EXTRA, newUrlString);
-                    if(asyncTaskLoader != null) {
+                    asyncTaskLoader = loaderManager.getLoader(ASYNCTASKLOADER_ID);
+                    if(asyncTaskLoader == null) {
                         loaderManager.initLoader(ASYNCTASKLOADER_ID, queryBundle, callback);
                     } else {
                         loaderManager.restartLoader(ASYNCTASKLOADER_ID, queryBundle, callback);
@@ -169,7 +170,8 @@ public class MovieGallery extends AppCompatActivity implements LoaderManager.Loa
                     newUrlString = NetworkUtils.buildUrl(PARAM_RATED);
                     queryBundle = new Bundle();
                     queryBundle.putString(BUNDLE_EXTRA, newUrlString);
-                    if(asyncTaskLoader != null) {
+                    asyncTaskLoader = loaderManager.getLoader(ASYNCTASKLOADER_ID);
+                    if(asyncTaskLoader == null) {
                         loaderManager.initLoader(ASYNCTASKLOADER_ID, queryBundle, callback);
                     } else {
                         loaderManager.restartLoader(ASYNCTASKLOADER_ID, queryBundle, callback);
@@ -202,32 +204,6 @@ public class MovieGallery extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoaderReset(Loader<String> loader) {    }
-
-
-
-/*    class MoviesQueryTask extends AsyncTask<URL, Void, String> {
-
-        @Override
-        protected String doInBackground(URL... params) {
-            URL searchUrl = params[0];
-            String urlResults = null;
-            try {
-                urlResults = NetworkUtils.getResponseFromHttpUrl(searchUrl);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return urlResults;
-        }
-
-        @Override
-        protected void onPostExecute(String urlResults) {
-            if (urlResults != null && !urlResults.equals("")) {
-                try {fetchMainScreenData(urlResults);} catch (JSONException e) { e.printStackTrace();
-                }
-            }
-        }
-
-    }*/
 
     //Some intuitive help on Parcelable/ArrayList behaviour found on Jose Mateo blog https://goo.gl/087425
     public void fetchMainScreenData(String mJsonString) throws JSONException {

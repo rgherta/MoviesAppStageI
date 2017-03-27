@@ -35,6 +35,7 @@
 
     <!-- Others -->
     <string name="movie_header">Movie Image Header</string>
+    <string name="bundle_name">BUNDLE_EXTRA</string>
 
 
 </resources>

@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by RGherta on 2/19/2017.
+ * Created by RGHERTA on 2/19/2017.
  */
 
 public class MovieObject implements Parcelable {

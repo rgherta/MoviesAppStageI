@@ -12,6 +12,8 @@ import java.io.IOException;
  * Created by RGHERTA on 3/25/2017.
  */
 
+//Useful intuitive step by step help on implementing Loaders found in this google android developer gitbook https://goo.gl/tksUOp
+
 public class MovieLoader extends AsyncTaskLoader<String> {
 
     private  String queryString;

@@ -13,7 +13,10 @@
     <dimen name="description_size">20sp</dimen>
     <dimen name="padding_votes_label">0dp</dimen>
 
-    <dimen name="grid_col">2dp</dimen>
+    <!-- Integer Values -->
+    <integer name="grid_col">2</integer>
+    <integer name="width_divider">600</integer>
+    <integer name="loader_id">22</integer>
 
 
 
