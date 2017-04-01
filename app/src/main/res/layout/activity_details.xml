@@ -26,10 +26,20 @@
         android:textSize="@dimen/title_size"
         android:textStyle="bold" />
 
+    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:isIndicator="true"
+        android:numStars="@integer/num_stars"
+        android:paddingLeft="@dimen/details_padding"
+        style="?android:attr/ratingBarStyleSmall" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:weightSum="1">
 
         <TextView
             android:id="@+id/detail_release_date"
@@ -51,7 +61,7 @@
 
         <TextView
             android:id="@+id/votes_label"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/details_padding"
             android:paddingBottom="@dimen/details_padding"

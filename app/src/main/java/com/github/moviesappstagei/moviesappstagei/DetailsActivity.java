@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -40,6 +41,11 @@ public class DetailsActivity extends AppCompatActivity {
                     .load(myMovie.getMoviePoster())
                     .into(poster);
 
+            //Adding RatingBar
+            RatingBar ratingBar = (RatingBar) findViewById(R.id.ratingBar);
+            float barRating = (float) ratingBar.getNumStars();
+            float myRating = Float.parseFloat(myMovie.getVoteAverage()) * (barRating / 10.0f); //TODO Hardcode float value
+            ratingBar.setRating(myRating);
 
         } else {
             throw new IllegalArgumentException(ERROR_PARCELABLE);

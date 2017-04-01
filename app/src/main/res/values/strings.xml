@@ -27,7 +27,7 @@
     <string name="json_vote_average">vote_average</string>
     <string name="movie_extra">Movie</string>
     <string name="posters_base_url">http://image.tmdb.org/t/p/w185/</string>
-    <string name="votes_label">" avg votes"</string>
+    <string name="votes_label">" / 10"</string>
 
     <!-- Errors -->
     <string name="error_parcelable">No movie parcelable intent detected</string>

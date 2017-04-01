@@ -18,6 +18,7 @@
     <integer name="width_divider">600</integer>
     <integer name="loader_id">22</integer>
 
-
+    <!-- RatingBar Dimensions -->
+    <integer name="num_stars">6</integer>
 
 </resources>
