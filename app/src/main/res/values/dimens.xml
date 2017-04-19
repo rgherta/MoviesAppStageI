@@ -13,10 +13,23 @@
     <dimen name="description_size">20sp</dimen>
     <dimen name="padding_votes_label">0dp</dimen>
 
+    <!-- Trailers Dimensions -->
+    <dimen name="icon_padding">16dp</dimen>
+    <dimen name="icon_width">64dp</dimen>
+    <dimen name="icon_height">64dp</dimen>
+    <dimen name="trailer_item_padding">16dp</dimen>
+    <dimen name="trailer_item_text_size">20sp</dimen>
+
+    <!-- Reviews Dimensions -->
+    <dimen name="reviews_layout_padding">16dp</dimen>
+    <dimen name="review_text_size">20sp</dimen>
+
     <!-- Integer Values -->
     <integer name="grid_col">2</integer>
     <integer name="width_divider">600</integer>
     <integer name="loader_id">22</integer>
+    <integer name="trailer_loader_id">23</integer>
+    <integer name="review_loader_id">24</integer>
 
     <!-- RatingBar Dimensions -->
     <integer name="num_stars">6</integer>

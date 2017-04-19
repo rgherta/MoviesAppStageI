@@ -1,4 +1,4 @@
-package com.github.moviesappstagei.moviesappstagei;
+package com.github.moviesappstagei.moviesappstagei.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +9,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.github.moviesappstagei.moviesappstagei.DetailsActivity;
+import com.github.moviesappstagei.moviesappstagei.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

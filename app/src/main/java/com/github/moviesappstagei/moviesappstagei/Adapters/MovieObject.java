@@ -1,4 +1,4 @@
-package com.github.moviesappstagei.moviesappstagei;
+package com.github.moviesappstagei.moviesappstagei.Adapters;
 
 import android.os.Parcel;
 import android.os.Parcelable;

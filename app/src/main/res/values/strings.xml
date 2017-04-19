@@ -37,5 +37,20 @@
     <string name="movie_header">Movie Image Header</string>
     <string name="bundle_name">BUNDLE_EXTRA</string>
 
+    <!-- Movie Trailers -->
+    <string name="trailers">Official Trailers</string>
+    <string name="trailer_1_title">trailer 1</string>
+    <string name="trailer_2_title">trailer 2</string>
+    <string name="trailers_param">videos</string>
+    <string name="trailers_bundle">trailers extra</string>
+
+    <!-- Movie Review -->
+    <string name="reviews">Latest Reviews</string>
+    <string name="reviews_not_found">No reviews found</string>
+    <string name="reviews_param">reviews</string>
+    <string name="reviews_bundle">reviews extra</string>
+
+
+
 
 </resources>

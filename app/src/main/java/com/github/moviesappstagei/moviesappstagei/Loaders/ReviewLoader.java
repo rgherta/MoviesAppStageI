@@ -1,20 +1,20 @@
-package com.github.moviesappstagei.moviesappstagei;
+package com.github.moviesappstagei.moviesappstagei.Loaders;
 
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 
-import com.github.moviesappstagei.moviesappstagei.utilities.NetworkUtils;
+import com.github.moviesappstagei.moviesappstagei.Utilities.NetworkUtils;
 
 import java.io.IOException;
 
 
 /**
- * Created by RGHERTA on 3/25/2017.
+ * Created by RGHERTA on 4/19/2017.
  */
 
 //Useful intuitive step by step help on implementing Loaders found in this google android developer gitbook https://goo.gl/tksUOp
 
-public class MovieLoader extends AsyncTaskLoader<String> {
+public class ReviewLoader extends AsyncTaskLoader<String> {
 
     private  String queryString;
 
@@ -24,7 +24,7 @@ public class MovieLoader extends AsyncTaskLoader<String> {
         forceLoad();
     }
 
-    public MovieLoader(Context context, String args) {
+    public ReviewLoader(Context context, String args) {
         super(context);
         queryString = args;
     }

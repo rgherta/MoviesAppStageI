@@ -1,4 +1,4 @@
-package com.github.moviesappstagei.moviesappstagei.utilities;
+package com.github.moviesappstagei.moviesappstagei.Utilities;
 
 import android.net.Uri;
 

@@ -23,7 +23,8 @@
 
         <activity android:name=".DetailsActivity"
             android:parentActivityName=".MovieGallery"
-            android:label="@string/details_activity_name">
+            android:label="@string/details_activity_name"
+            android:launchMode="singleTask">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

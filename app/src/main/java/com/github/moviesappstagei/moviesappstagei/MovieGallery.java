@@ -18,7 +18,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.github.moviesappstagei.moviesappstagei.utilities.NetworkUtils;
+import com.github.moviesappstagei.moviesappstagei.Adapters.MainAdapter;
+import com.github.moviesappstagei.moviesappstagei.Adapters.MovieObject;
+import com.github.moviesappstagei.moviesappstagei.Loaders.MovieLoader;
+import com.github.moviesappstagei.moviesappstagei.Utilities.NetworkUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
