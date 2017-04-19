@@ -33,7 +33,22 @@ public class NetworkUtils {
             e.printStackTrace();
         }
         return url.toString();
+    }
 
+    public static String getMovieInfo(String apiType, String movieID) {
+        Uri builtUri = Uri.parse(MOVIES_BASE_URL).buildUpon()
+                .appendPath(movieID)
+                .appendPath(apiType)
+                .appendQueryParameter(QUERY_PARAM, MDB_KEY)
+                .build();
+        URL url = null;
+
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return url.toString();
     }
 
     public static String getResponseFromHttpUrl(String url) throws IOException {
@@ -56,6 +71,8 @@ public class NetworkUtils {
             urlConnection.disconnect();
         }
     }
+
+
 
 
 }

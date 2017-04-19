@@ -38,6 +38,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
     private LoaderManager loaderManager;
     private Loader<String> asyncTaskLoader;
     private Bundle queryBundle;
+    private String movieID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +64,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
             releaseDate.setText(myMovie.getMovieReleaseDate());
             averageVote.setText(myMovie.getVoteAverage());
             detailDescription.setText(myMovie.getMovieDescription());
-            String movieID = myMovie.getMovieID(); //TODO: important movieID
+            movieID = myMovie.getMovieID(); //TODO: important movieID
 
             Picasso.with(DetailsActivity.this)
                     .load(myMovie.getMoviePoster())
@@ -84,8 +85,8 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
 
         //Loader Callback for Trailers and Reviews TODO: Add Movie ID to API path
         callback = DetailsActivity.this;
-        videosUrlString = NetworkUtils.buildUrl(PARAM_TRAILERS);
-        reviewsUrlString = NetworkUtils.buildUrl(PARAM_REVIEWS);
+        videosUrlString = NetworkUtils.getMovieInfo(PARAM_TRAILERS, movieID);
+        reviewsUrlString = NetworkUtils.getMovieInfo(PARAM_REVIEWS, movieID);
 
         //Using LoaderManager
         queryBundle = new Bundle();
