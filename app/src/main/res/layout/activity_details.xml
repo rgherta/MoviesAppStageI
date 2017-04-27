@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.github.moviesappstagei.moviesappstagei.DetailsActivity"
     android:scrollbars="vertical">
 
-<LinearLayout
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+
+    <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/reviews_layout_padding">
 
     <ImageView
         android:id="@+id/detail_image"
@@ -95,11 +102,12 @@
                 android:id="@+id/trailer_icon1"
                 android:layout_width="@dimen/icon_width"
                 android:layout_height="@dimen/icon_height"
-                android:src="@drawable/ic_play_circle_filled_black_24dp"
+                android:src="@drawable/ic_play_circle_outline_black_24dp"
                 android:paddingLeft="@dimen/icon_padding"
                 android:tint="@android:color/holo_red_dark"
                 />
             <TextView
+                android:id="@+id/first_trailer_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/trailer_1_title"
@@ -117,11 +125,12 @@
                     android:id="@+id/trailer_icon2"
                     android:layout_width="@dimen/icon_width"
                     android:layout_height="@dimen/icon_height"
-                    android:src="@drawable/ic_play_circle_filled_black_24dp"
+                    android:src="@drawable/ic_play_circle_outline_black_24dp"
                     android:paddingLeft="@dimen/icon_padding"
                     android:tint="@android:color/holo_red_dark"
                     />
                 <TextView
+                    android:id="@+id/second_trailer_txt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/trailer_2_title"
@@ -146,22 +155,68 @@
         android:padding="@dimen/reviews_layout_padding"
         android:orientation="vertical">
 
+
         <TextView
             android:id="@+id/review_first"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="@dimen/review_text_size"
+            android:visibility="gone"
+            android:textStyle="italic"/>
 
-            android:visibility="gone"/>
+        <TextView
+            android:id="@+id/review_first_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/review_text_size"
+            android:visibility="gone"
+            android:textStyle="bold"/>
+
+
         <TextView
             android:id="@+id/review_second"
+            android:paddingTop="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="@dimen/review_text_size"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            android:textStyle="italic"/>
+
+        <TextView
+            android:id="@+id/review_second_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/review_text_size"
+            android:visibility="gone"
+            android:textStyle="bold"/>
+
+        <Button
+            android:id="@+id/all_reviews"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="All Reviews"
+            android:visibility="gone"
+            android:layout_marginTop="16dp"/>
+
 
     </LinearLayout>
 
+
 </LinearLayout>
 
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_favourites"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:src="@drawable/ic_favorite_black_24dp"
+            app:layout_anchor="@id/detail_image"
+            app:layout_anchorGravity="bottom|right|end"
+            android:tint="@android:color/white"
+            android:layout_marginRight="36dp"
+            android:backgroundTint="@android:color/holo_red_dark"
+            android:elevation="3dp"
+            />
+
+</android.support.design.widget.CoordinatorLayout>
 </android.support.v4.widget.NestedScrollView>

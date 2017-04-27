@@ -72,6 +72,20 @@ public class NetworkUtils {
         }
     }
 
+    public static String buildYoutubeUrl(String key) {
+        Uri builtUri = Uri.parse("https://www.youtube.com").buildUpon() //TODO: Hardcode
+                .appendPath("watch")
+                .appendQueryParameter("v", key)
+                .build();
+        URL url = null;
+
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return url.toString();
+    }
 
 
 

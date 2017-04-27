@@ -22,7 +22,7 @@
 
     <!-- Reviews Dimensions -->
     <dimen name="reviews_layout_padding">16dp</dimen>
-    <dimen name="review_text_size">20sp</dimen>
+    <dimen name="review_text_size">16sp</dimen>
 
     <!-- Integer Values -->
     <integer name="grid_col">2</integer>
