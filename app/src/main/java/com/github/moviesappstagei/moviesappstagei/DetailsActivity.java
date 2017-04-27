@@ -192,6 +192,8 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
                 Intent chooser = Intent.createChooser(firstTrailerIntent, "Open With"); //TODO hardcode
                 if (firstTrailerIntent.resolveActivity(getPackageManager()) != null) {
                     startActivity(chooser);
+                } else  {
+                    Log.d("ImplicitIntents", "Can't handle this intent!"); //TODO Hardcode
                 }
             }
 
@@ -205,6 +207,8 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
                 Intent chooser = Intent.createChooser(secondTrailerIntent, "Open With"); //TODO hardcode
                 if (secondTrailerIntent.resolveActivity(getPackageManager()) != null) {
                     startActivity(chooser);
+                } else  {
+                    Log.d("ImplicitIntents", "Can't handle this intent!"); //TODO Hardcode
                 }
             }
 
