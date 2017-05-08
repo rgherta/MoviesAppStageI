@@ -147,9 +147,10 @@ public class MovieGallery extends AppCompatActivity implements LoaderManager.Loa
         MenuItem item = menu.findItem(R.id.spinner);
         Spinner spinner = (Spinner) item.getActionView();
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.spinner_choices, android.R.layout.simple_spinner_item);
+        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.spinner_choices, R.layout.selected_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
 
         spinner.setAdapter(adapter);
 

@@ -8,6 +8,7 @@
     <string-array name="spinner_choices">
         <item>Most Popular</item>
         <item>Highest Rating</item>
+        <item>Favorites</item>
     </string-array>
 
     <!-- Api Parameters -->
@@ -49,6 +50,14 @@
     <string name="reviews_not_found">No reviews found</string>
     <string name="reviews_param">reviews</string>
     <string name="reviews_bundle">reviews extra</string>
+    <string name="json_movie_results">results</string>
+    <string name="json_movie_key">key</string>
+    <string name="json_movie_name">name</string>
+    <string name="intent_movie_descr">Open with:</string>
+    <string name="intent_movie_ld">ImplicitIntents:</string>
+    <string name="intent_movie_error">"Can't handle this intent!"</string>
+    <string name="intent_movie_content">content</string>
+    <string name="intent_movie_author">author</string>
 
 
 

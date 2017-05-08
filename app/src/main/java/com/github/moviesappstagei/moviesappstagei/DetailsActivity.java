@@ -6,17 +6,20 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.moviesappstagei.moviesappstagei.Adapters.MovieObject;
+import com.github.moviesappstagei.moviesappstagei.Database.FavoritesDatabase;
 import com.github.moviesappstagei.moviesappstagei.Loaders.MovieLoader;
 import com.github.moviesappstagei.moviesappstagei.Utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
@@ -61,8 +64,8 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         BUNDLE_REVIEWS = getString(R.string.reviews_bundle);
         BUNDLE_TRAILERS = getString(R.string.trailers_bundle);
 
-        TRAILERS_ASYNCTASKLOADER_ID = 34; //TODO: Hardcode
-        REVIEWS_ASYNCTASKLOADER_ID = 35; //TODO: Hardcode
+        TRAILERS_ASYNCTASKLOADER_ID = getResources().getInteger(R.integer.trailer_loader_id);
+        REVIEWS_ASYNCTASKLOADER_ID = getResources().getInteger(R.integer.review_loader_id);
 
         ImageView poster = (ImageView) findViewById(R.id.detail_image);
         TextView title = (TextView) findViewById(R.id.detail_title);
@@ -87,7 +90,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
             //Adding RatingBar
             RatingBar ratingBar = (RatingBar) findViewById(R.id.ratingBar);
             float barRating = (float) ratingBar.getNumStars();
-            float myRating = Float.parseFloat(myMovie.getVoteAverage()) * (barRating / 10.0f); //TODO Hardcode float value
+            float myRating = Float.parseFloat(myMovie.getVoteAverage()) * (barRating / 10.0f);
             ratingBar.setRating(myRating);
 
         } else {
@@ -115,9 +118,22 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         } else {
             loaderManager.restartLoader(TRAILERS_ASYNCTASKLOADER_ID, queryBundle, callback);
             loaderManager.restartLoader(REVIEWS_ASYNCTASKLOADER_ID, queryBundle, callback);
-        }
+        };
+
+        //Adding FAB click handler
+        addFabListener(this);
+
+
+        //Creates Database Favourites
+        FavoritesDatabase favDb = new FavoritesDatabase(this);
+
+        //Gets writable DB
+        favDb.getWritableDatabase();
+
+
 
     }
+
 
 
     // --- LoaderCallbacks interface override methods ---
@@ -164,62 +180,87 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
 
 
 
-
-
-    //TODO: implement json handling for trailers
     private void fetchJsonTrailers(String data) throws JSONException {
+        String jsonMovieResults = getResources().getString(R.string.json_movie_results);
+        String jsonMovieKey = getResources().getString(R.string.json_movie_key);
+        String jsonMovieName = getResources().getString(R.string.json_movie_name);
+
         JSONObject myJson = new JSONObject(data);
-        JSONArray myData = myJson.getJSONArray("results"); //TODO: HARDCODE
-        String firstTrailerKey = myData.getJSONObject(0).getString("key"); //TODO: Hardcode
-        String secondTrailerKey = myData.getJSONObject(1).getString("key"); // TODO: Hardcode
-        String firstTrailerName = myData.getJSONObject(0).getString("name"); // TODO: Hardcode
-        String secondTrailerName = myData.getJSONObject(1).getString("name"); // TODO: Hardcode
-        final String firstTrailerUrl = NetworkUtils.buildYoutubeUrl(firstTrailerKey);
-        final String secondTrailerUrl = NetworkUtils.buildYoutubeUrl(secondTrailerKey);
+        JSONArray myData = myJson.getJSONArray(jsonMovieResults);
 
+        if(myData.length()>0) {
+            String firstTrailerKey = myData.getJSONObject(0).getString(jsonMovieKey);
+            String firstTrailerName = myData.getJSONObject(0).getString(jsonMovieName);
+            final String firstTrailerUrl = NetworkUtils.buildYoutubeUrl(firstTrailerKey);
 
-        TextView firstTrailerTextView = (TextView) findViewById(R.id.first_trailer_txt);
-        firstTrailerTextView.setText(firstTrailerName);
+            TextView firstTrailerTextView = (TextView) findViewById(R.id.first_trailer_txt);
+            firstTrailerTextView.setVisibility(View.VISIBLE);
+            firstTrailerTextView.setText(firstTrailerName);
 
-        TextView secondTrailerTextView = (TextView) findViewById(R.id.second_trailer_txt);
-        secondTrailerTextView.setText(secondTrailerName);
+            ImageView trailerImageViewFirst = (ImageView) findViewById(R.id.trailer_icon1);
+            trailerImageViewFirst.setVisibility(View.VISIBLE);
 
-        ImageView trailerImageViewFirst = (ImageView) findViewById(R.id.trailer_icon1);
-        trailerImageViewFirst.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent firstTrailerIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(firstTrailerUrl));
-                Intent chooser = Intent.createChooser(firstTrailerIntent, "Open With"); //TODO hardcode
-                if (firstTrailerIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(chooser);
-                } else  {
-                    Log.d("ImplicitIntents", "Can't handle this intent!"); //TODO Hardcode
+            trailerImageViewFirst.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String intentMovieDescr = getResources().getString(R.string.intent_movie_descr);
+                    String intentMovieLd = getResources().getString(R.string.intent_movie_ld);
+                    String intentMovieError = getResources().getString(R.string.intent_movie_error);
+
+                    Intent firstTrailerIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(firstTrailerUrl));
+                    Intent chooser = Intent.createChooser(firstTrailerIntent, intentMovieDescr);
+                    if (firstTrailerIntent.resolveActivity(getPackageManager()) != null) {
+                        startActivity(chooser);
+                    } else {
+                        Log.d(intentMovieLd, intentMovieError);
+                    }
                 }
-            }
 
-        });
+            });
+        }
 
-        ImageView trailerImageViewSecond = (ImageView) findViewById(R.id.trailer_icon2);
-        trailerImageViewSecond.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent secondTrailerIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(secondTrailerUrl));
-                Intent chooser = Intent.createChooser(secondTrailerIntent, "Open With"); //TODO hardcode
-                if (secondTrailerIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(chooser);
-                } else  {
-                    Log.d("ImplicitIntents", "Can't handle this intent!"); //TODO Hardcode
+        if(myData.length()>1) {
+            String secondTrailerKey = myData.getJSONObject(1).getString(jsonMovieKey);
+            String secondTrailerName = myData.getJSONObject(1).getString(jsonMovieName);
+            final String secondTrailerUrl = NetworkUtils.buildYoutubeUrl(secondTrailerKey);
+
+            TextView secondTrailerTextView = (TextView) findViewById(R.id.second_trailer_txt);
+            secondTrailerTextView.setVisibility(View.VISIBLE);
+            secondTrailerTextView.setText(secondTrailerName);
+
+            ImageView trailerImageViewSecond = (ImageView) findViewById(R.id.trailer_icon2);
+            trailerImageViewSecond.setVisibility(View.VISIBLE);
+
+            trailerImageViewSecond.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String intentMovieDescr = getResources().getString(R.string.intent_movie_descr);
+                    String intentMovieLd = getResources().getString(R.string.intent_movie_ld);
+                    String intentMovieError = getResources().getString(R.string.intent_movie_error);
+
+                    Intent secondTrailerIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(secondTrailerUrl));
+                    Intent chooser = Intent.createChooser(secondTrailerIntent, intentMovieDescr);
+                    if (secondTrailerIntent.resolveActivity(getPackageManager()) != null) {
+                        startActivity(chooser);
+                    } else {
+                        Log.d(intentMovieLd, intentMovieError);
+                    }
                 }
-            }
 
-        });
+            });
+        }
 
     }
 
-    //TODO: implement json handling for reviews
     private void fetchJsonReviews(String data) throws JSONException {
+        String jsonMovieResults = getResources().getString(R.string.json_movie_results);
+        String jsonMovieContent = getResources().getString(R.string.intent_movie_content);
+        String jsonMovieAuthor = getResources().getString(R.string.intent_movie_author);
+        int maxCharactersReview = getResources().getInteger(R.integer.review_max_char);
+
+
         JSONObject myJson = new JSONObject(data);
-        JSONArray myData = myJson.getJSONArray("results"); //TODO: HARDCODE
+        JSONArray myData = myJson.getJSONArray(jsonMovieResults);
         if(myData.length() > 0){
             TextView reviewsTitle = (TextView) findViewById(R.id.reviews_title);
             reviewsTitle.setVisibility(View.VISIBLE);
@@ -227,10 +268,10 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
             TextView firstReview = (TextView) findViewById(R.id.review_first);
             firstReview.setVisibility(View.VISIBLE);
 
-            String firstReviewContent = myData.getJSONObject(0).getString("content").replaceAll("\r\n\r\n","").replaceAll("[^A-Za-z0-9 ]",""); //TODO: hardcode
+            String firstReviewContent = myData.getJSONObject(0).getString(jsonMovieContent).replaceAll("\r\n\r\n","").replaceAll("[^A-Za-z0-9- -.-']",""); //TODO: hardcode
             int maxCharsFirst;
-            if(firstReviewContent.length()>300) {
-                maxCharsFirst = 300;
+            if(firstReviewContent.length()>maxCharactersReview) {
+                maxCharsFirst = maxCharactersReview;
             } else {
                 maxCharsFirst = firstReviewContent.length();
             }
@@ -238,17 +279,17 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
 
             TextView firstAuthor = (TextView) findViewById(R.id.review_first_author);
             firstAuthor.setVisibility(View.VISIBLE);
-            firstAuthor.setText(myData.getJSONObject(0).getString("author"));
+            firstAuthor.setText(myData.getJSONObject(0).getString(jsonMovieAuthor));
 
         }
 
         if(myData.length() > 1){
             TextView secondReview = (TextView) findViewById(R.id.review_second);
             secondReview.setVisibility(View.VISIBLE);
-            String secondReviewContent = myData.getJSONObject(1).getString("content").replaceAll("\r\n\r\n","").replaceAll("[^A-Za-z0-9 ]",""); //TODO: hardcode
+            String secondReviewContent = myData.getJSONObject(1).getString(jsonMovieContent).replaceAll("\r\n\r\n","").replaceAll("[^A-Za-z0-9- -.-']",""); //TODO: hardcode
             int maxCharsSec;
-            if(secondReviewContent.length()>300) {
-                maxCharsSec = 300;
+            if(secondReviewContent.length()>maxCharactersReview) {
+                maxCharsSec = maxCharactersReview;
             } else {
                 maxCharsSec = secondReviewContent.length();
             }
@@ -256,20 +297,42 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
 
             TextView secondAuthor = (TextView) findViewById(R.id.review_second_author);
             secondAuthor.setVisibility(View.VISIBLE);
-            secondAuthor.setText(myData.getJSONObject(1).getString("author"));
+            secondAuthor.setText(myData.getJSONObject(1).getString(jsonMovieAuthor));
 
-            Button reviewsButton = (Button) findViewById(R.id.all_reviews);
-            reviewsButton.setVisibility(View.VISIBLE);
         }
 
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.share_details, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
 
     public boolean isOnline() {
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnected();
+    }
+
+    private void addFabListener(final Context context) {
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_favourites);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //fab.setBackgroundColor(ContextCompat.getColor(context,R.color.colorRating));
+                //Drawable drb = fab.getDrawable();
+                //drb.setTint(ContextCompat.getColor(context,R.color.colorRating));
+                // Create a new intent to start an AddTaskActivity
+                //TODO: create intent
+                //Intent addTaskIntent = new Intent(MainActivity.this, AddTaskActivity.class);
+                //startActivity(addTaskIntent);
+                Toast.makeText(context, "Fab clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 }

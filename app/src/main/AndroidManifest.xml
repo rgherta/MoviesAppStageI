@@ -31,7 +31,6 @@
                 android:value=".MovieGallery" />
         </activity>
 
-
     </application>
 
 </manifest>

@@ -40,6 +40,7 @@
         android:isIndicator="true"
         android:numStars="@integer/num_stars"
         android:paddingLeft="@dimen/details_padding"
+        android:progressTint="@color/colorRating"
         style="?android:attr/ratingBarStyleSmall" />
 
     <LinearLayout
@@ -104,7 +105,8 @@
                 android:layout_height="@dimen/icon_height"
                 android:src="@drawable/ic_play_circle_outline_black_24dp"
                 android:paddingLeft="@dimen/icon_padding"
-                android:tint="@android:color/holo_red_dark"
+                android:tint="@color/colorAccent"
+                android:visibility="gone"
                 />
             <TextView
                 android:id="@+id/first_trailer_txt"
@@ -112,7 +114,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/trailer_1_title"
                 android:paddingLeft="@dimen/trailer_item_padding"
-                android:textSize="@dimen/trailer_item_text_size"/>
+                android:textSize="@dimen/trailer_item_text_size"
+                android:visibility="gone"/>
             </LinearLayout>
 
             <LinearLayout
@@ -127,7 +130,8 @@
                     android:layout_height="@dimen/icon_height"
                     android:src="@drawable/ic_play_circle_outline_black_24dp"
                     android:paddingLeft="@dimen/icon_padding"
-                    android:tint="@android:color/holo_red_dark"
+                    android:tint="@color/colorAccent"
+                    android:visibility="gone"
                     />
                 <TextView
                     android:id="@+id/second_trailer_txt"
@@ -135,7 +139,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/trailer_2_title"
                     android:paddingLeft="@dimen/trailer_item_padding"
-                    android:textSize="@dimen/trailer_item_text_size"/>
+                    android:textSize="@dimen/trailer_item_text_size"
+                    android:visibility="gone"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -190,14 +195,6 @@
             android:visibility="gone"
             android:textStyle="bold"/>
 
-        <Button
-            android:id="@+id/all_reviews"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="All Reviews"
-            android:visibility="gone"
-            android:layout_marginTop="16dp"/>
-
 
     </LinearLayout>
 
@@ -214,7 +211,7 @@
             app:layout_anchorGravity="bottom|right|end"
             android:tint="@android:color/white"
             android:layout_marginRight="36dp"
-            android:backgroundTint="@android:color/holo_red_dark"
+            android:backgroundTint="@color/colorAccent"
             android:elevation="3dp"
             />
 

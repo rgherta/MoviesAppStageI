@@ -28,10 +28,13 @@
     <integer name="grid_col">2</integer>
     <integer name="width_divider">600</integer>
     <integer name="loader_id">22</integer>
-    <integer name="trailer_loader_id">23</integer>
-    <integer name="review_loader_id">24</integer>
+    <integer name="trailer_loader_id">34</integer>
+    <integer name="review_loader_id">35</integer>
 
     <!-- RatingBar Dimensions -->
     <integer name="num_stars">6</integer>
+
+    <!-- Reviews Dimensions -->
+    <integer name="review_max_char">300</integer>
 
 </resources>

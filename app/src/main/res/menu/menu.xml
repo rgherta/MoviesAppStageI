@@ -5,6 +5,7 @@
         android:title=""
         android:id="@+id/spinner"
         app:actionViewClass="android.widget.Spinner"
-        app:showAsAction="always"
-    />
+        app:showAsAction="always">
+
+    </item>
 </menu>
