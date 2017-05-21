@@ -67,6 +67,10 @@
     <string name="intent_movie_content">content</string>
     <string name="intent_movie_author">author</string>
 
+    <string name="current_layout_position">Current Position</string>
+    <string name="current_list_position">Current_List_Position</string>
+    <string name="current_spinner_selection">My Spinner Selection</string>
+
 
 
 

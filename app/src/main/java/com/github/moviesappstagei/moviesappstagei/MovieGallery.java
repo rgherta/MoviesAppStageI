@@ -64,16 +64,20 @@ public class MovieGallery extends AppCompatActivity implements LoaderManager.Loa
 
     public static int ASYNCTASKLOADER_ID;
     public static String BUNDLE_EXTRA;
+    public static String CURRENT_POS_LABEL;
+    public static String CURRENT_SPINNER_CHOICE;
 
     private String newUrlString;
     private LoaderManager.LoaderCallbacks<String> callback;
     private LoaderManager loaderManager;
     private Loader<String> asyncTaskLoader;
     private Bundle queryBundle;
+    public static int currentRecyclerPosition;
+    public static String activitySelectedOption;
 
     //Main Objects
     MainAdapter movieAdapter;
-    RecyclerView mainRecycler;
+    GridLayoutManager gLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,9 +106,11 @@ public class MovieGallery extends AppCompatActivity implements LoaderManager.Loa
         VOTES_LABEL = getString(R.string.votes_label);
         ASYNCTASKLOADER_ID = getResources().getInteger(R.integer.loader_id);
         BUNDLE_EXTRA = getString(R.string.bundle_name);
+        CURRENT_POS_LABEL = getString(R.string.current_layout_position);
+        CURRENT_SPINNER_CHOICE = getString(R.string.current_spinner_selection);
 
         //Adding the RW reference
-        mainRecycler = (RecyclerView) findViewById(R.id.main_recycler);
+        RecyclerView mainRecycler = (RecyclerView) findViewById(R.id.main_recycler);
 
         //Calculating number of items per row
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -115,7 +121,7 @@ public class MovieGallery extends AppCompatActivity implements LoaderManager.Loa
         if (nColumns < getResources().getInteger(R.integer.grid_col)) nColumns = getResources().getInteger(R.integer.grid_col);
 
         //Adding LayoutManager
-        GridLayoutManager gLayoutManager = new GridLayoutManager(this, nColumns);
+        gLayoutManager = new GridLayoutManager(this, nColumns);
 
         //Binding to the xml tag
         mainRecycler.setLayoutManager(gLayoutManager);
@@ -154,38 +160,49 @@ public class MovieGallery extends AppCompatActivity implements LoaderManager.Loa
                 R.array.spinner_choices, R.layout.selected_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+        if(activitySelectedOption == MENU_POP) {
+            spinner.setSelection(0);
+        } else if (activitySelectedOption == MENU_RATED) {
+            spinner.setSelection(1);
+        } else if (activitySelectedOption == MENU_FAVS){
+            spinner.setSelection(0);
+        }
+
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String selectedOption = adapterView.getSelectedItem().toString();
                 if (selectedOption.equals(MENU_POP)) {
+
                     newUrlString = NetworkUtils.buildUrl(PARAM_POP);
                     queryBundle = new Bundle();
                     queryBundle.putString(BUNDLE_EXTRA, newUrlString);
                     asyncTaskLoader = loaderManager.getLoader(ASYNCTASKLOADER_ID);
-                    if(asyncTaskLoader == null) {
-                        loaderManager.initLoader(ASYNCTASKLOADER_ID, queryBundle, callback);
-                    } else {
-                        loaderManager.restartLoader(ASYNCTASKLOADER_ID, queryBundle, callback);
-                    }
-                    mainRecycler.scrollToPosition(0);
 
-                } else if(selectedOption.equals(MENU_RATED)){
-                    newUrlString = NetworkUtils.buildUrl(PARAM_RATED);
-                    queryBundle = new Bundle();
-                    queryBundle.putString(BUNDLE_EXTRA, newUrlString);
-                    asyncTaskLoader = loaderManager.getLoader(ASYNCTASKLOADER_ID);
                     if(asyncTaskLoader == null) {
                         loaderManager.initLoader(ASYNCTASKLOADER_ID, queryBundle, callback);
-                    } else {
-                        loaderManager.restartLoader(ASYNCTASKLOADER_ID, queryBundle, callback);
-                    }
-                    mainRecycler.scrollToPosition(0);
-                } else if (selectedOption.equals(MENU_FAVS)){
-                    Intent intent = new Intent(getBaseContext(), FavoritesActivity.class);
-                    getBaseContext().startActivity(intent);
-                }
+                        } else {
+                                loaderManager.restartLoader(ASYNCTASKLOADER_ID, queryBundle, callback);
+                        }
+                        activitySelectedOption = MENU_POP;
+
+                        } else if(selectedOption.equals(MENU_RATED)){
+                            newUrlString = NetworkUtils.buildUrl(PARAM_RATED);
+                            queryBundle = new Bundle();
+                            queryBundle.putString(BUNDLE_EXTRA, newUrlString);
+                            asyncTaskLoader = loaderManager.getLoader(ASYNCTASKLOADER_ID);
+                            if(asyncTaskLoader == null) {
+                                loaderManager.initLoader(ASYNCTASKLOADER_ID, queryBundle, callback);
+                            } else {
+                                loaderManager.restartLoader(ASYNCTASKLOADER_ID, queryBundle, callback);
+                            }
+                            activitySelectedOption = MENU_RATED;
+                            } else if (selectedOption.equals(MENU_FAVS)){
+                                Intent intent = new Intent(getBaseContext(), FavoritesActivity.class);
+                                startActivity(intent);
+                                activitySelectedOption = MENU_FAVS;
+                            }
             }
 
             @Override
@@ -204,6 +221,7 @@ public class MovieGallery extends AppCompatActivity implements LoaderManager.Loa
         if (data != null && !data.equals("")) {
             try {
                 fetchMainScreenData(data);
+                gLayoutManager.scrollToPosition(currentRecyclerPosition);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -255,11 +273,17 @@ public class MovieGallery extends AppCompatActivity implements LoaderManager.Loa
     @Override
     protected void onSaveInstanceState(Bundle outState){
         super.onSaveInstanceState(outState);
+
+        currentRecyclerPosition = gLayoutManager.findFirstVisibleItemPosition();
+        outState.putInt(CURRENT_POS_LABEL, currentRecyclerPosition);
+        outState.putString(CURRENT_SPINNER_CHOICE, activitySelectedOption);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState){
         super.onRestoreInstanceState(savedInstanceState);
+        currentRecyclerPosition = savedInstanceState.getInt(CURRENT_POS_LABEL);
+        activitySelectedOption = savedInstanceState.getString(CURRENT_SPINNER_CHOICE);
     }
 
 

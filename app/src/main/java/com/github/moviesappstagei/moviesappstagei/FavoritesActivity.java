@@ -20,10 +20,13 @@ import com.github.moviesappstagei.moviesappstagei.Database.MovieContract;
 public class FavoritesActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static int ID_FAV_LOADER;
+    private static String BUNDLE_POS_LABEL;
 
     private FavoritesAdapter mFavAdapter;
     private RecyclerView mRecyclerView;
     private int mPosition = RecyclerView.NO_POSITION;
+    private int currentListPosition;
+    private LinearLayoutManager layoutManager;
 
 
     @Override
@@ -33,16 +36,16 @@ public class FavoritesActivity extends AppCompatActivity implements LoaderManage
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ID_FAV_LOADER = getResources().getInteger(R.integer.fav_loader_id);
+        BUNDLE_POS_LABEL = getString(R.string.current_list_position);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.fav_recycler);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
         mFavAdapter = new FavoritesAdapter(this);
         mRecyclerView.setAdapter(mFavAdapter);
 
         getSupportLoaderManager().initLoader(ID_FAV_LOADER, null, this);
-        Uri uri = MovieContract.FeedDatabase.CONTENT_URI;
     }
 
     @Override
@@ -64,7 +67,8 @@ public class FavoritesActivity extends AppCompatActivity implements LoaderManage
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mFavAdapter.swapCursor(data);
         if (mPosition == RecyclerView.NO_POSITION) mPosition = 0;
-        mRecyclerView.smoothScrollToPosition(mPosition);
+        //mRecyclerView.smoothScrollToPosition(mPosition);
+        layoutManager.scrollToPosition(currentListPosition);
     }
 
     @Override
@@ -77,11 +81,14 @@ public class FavoritesActivity extends AppCompatActivity implements LoaderManage
     @Override
     protected void onSaveInstanceState(Bundle outState){
         super.onSaveInstanceState(outState);
+        currentListPosition = layoutManager.findFirstVisibleItemPosition();
+        outState.putInt(BUNDLE_POS_LABEL, currentListPosition);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState){
         super.onRestoreInstanceState(savedInstanceState);
+        currentListPosition = savedInstanceState.getInt(BUNDLE_POS_LABEL);
     }
 
 }
