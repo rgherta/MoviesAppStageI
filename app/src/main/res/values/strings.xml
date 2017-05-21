@@ -18,6 +18,7 @@
     <string name="menu_pop">Most Popular</string>
     <string name="param_pop">popular</string>
     <string name="menu_rated">Highest Rating</string>
+    <string name="menu_favs">Favorites</string>
     <string name="param_rated">top_rated</string>
     <string name="json_results">results</string>
     <string name="json_id">id</string>
@@ -44,6 +45,7 @@
     <string name="trailer_2_title">trailer 2</string>
     <string name="trailers_param">videos</string>
     <string name="trailers_bundle">trailers extra</string>
+    <string name="movie_bundle">movie extra bundle</string>
 
     <!-- Movie Review -->
     <string name="reviews">Latest Reviews</string>

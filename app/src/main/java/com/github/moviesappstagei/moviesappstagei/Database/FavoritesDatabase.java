@@ -12,7 +12,7 @@ import android.util.Log;
 public class FavoritesDatabase extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "favorites_database.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 6;
 
 
     public FavoritesDatabase(Context context) {
@@ -25,14 +25,12 @@ public class FavoritesDatabase extends SQLiteOpenHelper {
 
         final String SQL_CREATE = "CREATE TABLE " +
                 MovieContract.FeedDatabase.TABLE_NAME + " (" +
-                MovieContract.FeedDatabase._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 MovieContract.FeedDatabase.MOVIE_ID + " INTEGER PRIMARY KEY, " +
                 MovieContract.FeedDatabase.MOVIE_TITLE + " TEXT NOT NULL, " +
                 MovieContract.FeedDatabase.MOVIE_RELEASE_DATE + " TEXT NOT NULL, " +
                 MovieContract.FeedDatabase.MOVIE_PLOT + " TEXT NOT NULL, " +
                 MovieContract.FeedDatabase.MOVIE_POSTER + " TEXT NOT NULL, " +
-                MovieContract.FeedDatabase.MOVIE_RATING + " TEXT NOT NULL, " +
-                MovieContract.FeedDatabase.MOVIE_TRAILER + " TEXT NOT NULL " + ");";
+                MovieContract.FeedDatabase.MOVIE_RATING + " TEXT NOT NULL);";
 
         sqLiteDatabase.execSQL(SQL_CREATE);
 

@@ -30,11 +30,16 @@
     <integer name="loader_id">22</integer>
     <integer name="trailer_loader_id">34</integer>
     <integer name="review_loader_id">35</integer>
+    <integer name="task_insert_loader_id">36</integer>
+    <integer name="task_delete_loader_id">37</integer>
+    <integer name="task_query_loader_id">38</integer>
 
     <!-- RatingBar Dimensions -->
     <integer name="num_stars">6</integer>
 
     <!-- Reviews Dimensions -->
     <integer name="review_max_char">300</integer>
+
+
 
 </resources>

@@ -31,6 +31,11 @@
                 android:value=".MovieGallery" />
         </activity>
 
+        <provider
+            android:name="com.github.moviesappstagei.moviesappstagei.Database.MovieContentProvider"
+            android:authorities="com.github.moviesappstagei.moviesappstagei"
+            android:exported="false"/>
+
     </application>
 
 </manifest>

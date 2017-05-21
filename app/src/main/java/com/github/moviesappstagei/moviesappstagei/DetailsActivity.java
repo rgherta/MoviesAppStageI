@@ -1,25 +1,30 @@
 package com.github.moviesappstagei.moviesappstagei;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.app.ShareCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.moviesappstagei.moviesappstagei.Adapters.MovieObject;
 import com.github.moviesappstagei.moviesappstagei.Database.FavoritesDatabase;
+import com.github.moviesappstagei.moviesappstagei.Database.MovieContract;
 import com.github.moviesappstagei.moviesappstagei.Loaders.MovieLoader;
 import com.github.moviesappstagei.moviesappstagei.Utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
@@ -42,8 +47,12 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
     public static String PARAM_REVIEWS;
     public static String BUNDLE_TRAILERS;
     public static String BUNDLE_REVIEWS;
+    public static String BUNDLE_MOVIE;
     public static int TRAILERS_ASYNCTASKLOADER_ID;
     public static int REVIEWS_ASYNCTASKLOADER_ID;
+    public static int TASK_LOADER_INSERT_MOVIE_ID;
+    public static int TASK_LOADER_DELETE_MOVIE_ID;
+    public static int TASK_LOADER_QUERY_MOVIE_ID;
 
     //Loader variables
     private String videosUrlString;
@@ -53,6 +62,15 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
     private Loader<String> asyncTaskLoader;
     private Bundle queryBundle;
     private String movieID;
+    private String movieTitle;
+    private String movieReleaseDate;
+    private String moviePlot;
+    private String movieRating;
+    private String moviePoster;
+
+    //Movie isFavourite variable
+    private boolean isFav = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +81,14 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         PARAM_TRAILERS = getString(R.string.trailers_param);
         BUNDLE_REVIEWS = getString(R.string.reviews_bundle);
         BUNDLE_TRAILERS = getString(R.string.trailers_bundle);
+        BUNDLE_MOVIE = getString(R.string.movie_bundle);
 
         TRAILERS_ASYNCTASKLOADER_ID = getResources().getInteger(R.integer.trailer_loader_id);
         REVIEWS_ASYNCTASKLOADER_ID = getResources().getInteger(R.integer.review_loader_id);
+        TASK_LOADER_INSERT_MOVIE_ID = getResources().getInteger(R.integer.task_insert_loader_id);
+        TASK_LOADER_DELETE_MOVIE_ID = getResources().getInteger(R.integer.task_delete_loader_id);
+        TASK_LOADER_QUERY_MOVIE_ID = getResources().getInteger(R.integer.task_query_loader_id);
+
 
         ImageView poster = (ImageView) findViewById(R.id.detail_image);
         TextView title = (TextView) findViewById(R.id.detail_title);
@@ -76,21 +99,28 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         Intent startIntent = getIntent();
         if(startIntent.hasExtra(MOVIE_EXTRA)){
             MovieObject myMovie = startIntent.getParcelableExtra(MOVIE_EXTRA);
-            title.setText(myMovie.getMovieTitle());
-            releaseDate.setText(myMovie.getMovieReleaseDate());
-            averageVote.setText(myMovie.getVoteAverage());
-            detailDescription.setText(myMovie.getMovieDescription());
+            //passing object fields to string variables
             movieID = myMovie.getMovieID();
+            movieTitle = myMovie.getMovieTitle();
+            movieReleaseDate = myMovie.getMovieReleaseDate();
+            moviePlot = myMovie.getMovieDescription();
+            movieRating = myMovie.getVoteAverage();
+            moviePoster = myMovie.getMoviePoster();
+
+            title.setText(movieTitle);
+            releaseDate.setText(movieReleaseDate);
+            averageVote.setText(movieRating);
+            detailDescription.setText(moviePlot);
             Log.v("ROMAN", movieID); //TODO: Remove at the end
 
             Picasso.with(DetailsActivity.this)
-                    .load(myMovie.getMoviePoster())
+                    .load(moviePoster)
                     .into(poster);
 
             //Adding RatingBar
             RatingBar ratingBar = (RatingBar) findViewById(R.id.ratingBar);
             float barRating = (float) ratingBar.getNumStars();
-            float myRating = Float.parseFloat(myMovie.getVoteAverage()) * (barRating / 10.0f);
+            float myRating = Float.parseFloat(movieRating) * (barRating / 10.0f);
             ratingBar.setRating(myRating);
 
         } else {
@@ -109,28 +139,25 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         queryBundle = new Bundle();
         queryBundle.putString(BUNDLE_TRAILERS, videosUrlString);
         queryBundle.putString(BUNDLE_REVIEWS, reviewsUrlString);
+        queryBundle.putString(BUNDLE_MOVIE, movieID);
 
         loaderManager = getSupportLoaderManager();
         asyncTaskLoader = loaderManager.getLoader(TRAILERS_ASYNCTASKLOADER_ID);
         if(asyncTaskLoader == null) {
             loaderManager.initLoader(TRAILERS_ASYNCTASKLOADER_ID, queryBundle, callback);
             loaderManager.initLoader(REVIEWS_ASYNCTASKLOADER_ID, queryBundle, callback);
+            loaderManager.initLoader(TASK_LOADER_QUERY_MOVIE_ID, queryBundle, callback);
         } else {
             loaderManager.restartLoader(TRAILERS_ASYNCTASKLOADER_ID, queryBundle, callback);
             loaderManager.restartLoader(REVIEWS_ASYNCTASKLOADER_ID, queryBundle, callback);
+            loaderManager.restartLoader(TASK_LOADER_QUERY_MOVIE_ID, queryBundle, callback);
         };
-
-        //Adding FAB click handler
-        addFabListener(this);
-
 
         //Creates Database Favourites
         FavoritesDatabase favDb = new FavoritesDatabase(this);
 
         //Gets writable DB
         favDb.getWritableDatabase();
-
-
 
     }
 
@@ -142,6 +169,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         MovieLoader result = null;
         if(id == TRAILERS_ASYNCTASKLOADER_ID) { result = new MovieLoader(this, args.getString(BUNDLE_TRAILERS));}
         if(id == REVIEWS_ASYNCTASKLOADER_ID) { result = new MovieLoader(this, args.getString(BUNDLE_REVIEWS));}
+        if(id == TASK_LOADER_QUERY_MOVIE_ID) { result = new MovieLoader(this, args.getString(BUNDLE_MOVIE));}
         return result;
     }
 
@@ -165,6 +193,18 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
                     fetchJsonReviews(data);
                 } catch (JSONException e) {
                     e.printStackTrace();
+                }
+            }
+
+        };
+
+        if(loader.getId() == TASK_LOADER_QUERY_MOVIE_ID ) {
+            if (data != null && !data.equals("")) {
+                if(data.equals("ok")) {
+                    isFav = true;
+                    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_favourites);
+                    Drawable drb = fab.getDrawable();
+                    drb.setTint(ContextCompat.getColor(getBaseContext(), R.color.colorRating));
                 }
             }
 
@@ -310,6 +350,27 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_share:
+                int id = item.getItemId();
+                if (id == R.id.action_share) {
+                    Intent shareIntent = ShareCompat.IntentBuilder.from(this)
+                            .setType("text/plain")
+                            //TODO: Hardcode and add youtube URL
+                            .setText("Hey checkout this cool movie")
+                            .getIntent();
+                    shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+                    startActivity(shareIntent);
+                    return true;
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    };
+
 
     public boolean isOnline() {
         ConnectivityManager cm =
@@ -318,21 +379,37 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         return netInfo != null && netInfo.isConnected();
     }
 
-    private void addFabListener(final Context context) {
+    public void fabEvent(View view)  {
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_favourites);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //fab.setBackgroundColor(ContextCompat.getColor(context,R.color.colorRating));
-                //Drawable drb = fab.getDrawable();
-                //drb.setTint(ContextCompat.getColor(context,R.color.colorRating));
-                // Create a new intent to start an AddTaskActivity
-                //TODO: create intent
-                //Intent addTaskIntent = new Intent(MainActivity.this, AddTaskActivity.class);
-                //startActivity(addTaskIntent);
-                Toast.makeText(context, "Fab clicked", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
+        Drawable drb = fab.getDrawable();
+        Uri uri;
 
-}
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MovieContract.FeedDatabase.MOVIE_ID, movieID);
+        contentValues.put(MovieContract.FeedDatabase.MOVIE_TITLE, movieTitle);
+        contentValues.put(MovieContract.FeedDatabase.MOVIE_RELEASE_DATE, movieReleaseDate);
+        contentValues.put(MovieContract.FeedDatabase.MOVIE_PLOT, moviePlot);
+        contentValues.put(MovieContract.FeedDatabase.MOVIE_RATING, movieRating);
+        contentValues.put(MovieContract.FeedDatabase.MOVIE_POSTER, moviePoster);
+
+        //If not favourite, add to database
+        if(!isFav) {
+            uri = getContentResolver().insert(MovieContract.FeedDatabase.CONTENT_URI, contentValues);
+            if (uri != null) {
+                isFav = true;
+                drb.setTint(ContextCompat.getColor(getBaseContext(), R.color.colorRating));
+            }
+        //If favourite, remove from database
+        } else if(isFav) {
+            uri = MovieContract.FeedDatabase.CONTENT_URI.buildUpon().appendPath(movieID).build();
+            int nbLines = getContentResolver().delete(uri, null, null);
+            if (nbLines > 0) {
+                isFav = false;
+                drb.setTint(ContextCompat.getColor(getBaseContext(), R.color.colorFont));
+            }
+            }
+        }
+
+
+
+    }

@@ -34,7 +34,7 @@ import java.util.List;
  * Created by RGHERTA on 2/19/2017.
  */
 
-public class MovieGallery extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
+public class MovieGallery extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>  {
 
     //Hardcoded Strings
     public static String MOVIES_BASE_URL;
@@ -45,6 +45,7 @@ public class MovieGallery extends AppCompatActivity implements LoaderManager.Loa
     public static String PARAM_POP;
     public static String MENU_RATED;
     public static String PARAM_RATED;
+    public static String MENU_FAVS;
 
     public static String JSON_RESULTS;
     public static String JSON_ID;
@@ -82,6 +83,7 @@ public class MovieGallery extends AppCompatActivity implements LoaderManager.Loa
         QUERY_PARAM = getString(R.string.query_param);
         MDB_KEY = getString(R.string.mdb_key);
         MENU_POP = getString(R.string.menu_pop);
+        MENU_FAVS = getString(R.string.menu_favs);
         PARAM_POP = getString(R.string.param_pop);
         MENU_RATED = getString(R.string.menu_rated);
         PARAM_RATED = getString(R.string.param_rated);
@@ -150,8 +152,6 @@ public class MovieGallery extends AppCompatActivity implements LoaderManager.Loa
         final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.spinner_choices, R.layout.selected_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-
         spinner.setAdapter(adapter);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -181,6 +181,12 @@ public class MovieGallery extends AppCompatActivity implements LoaderManager.Loa
                         loaderManager.restartLoader(ASYNCTASKLOADER_ID, queryBundle, callback);
                     }
                     mainRecycler.scrollToPosition(0);
+                } else if (selectedOption.equals(MENU_FAVS)){
+                    //TODO: update favorites list
+/*                    LinearLayoutManager favLayoutManager = new LinearLayoutManager(getBaseContext(), LinearLayoutManager.VERTICAL, false);
+                    mainRecycler.setLayoutManager(favLayoutManager);*/
+
+
                 }
             }
 

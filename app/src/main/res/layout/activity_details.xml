@@ -213,6 +213,7 @@
             android:layout_marginRight="36dp"
             android:backgroundTint="@color/colorAccent"
             android:elevation="3dp"
+            android:onClick="fabEvent"
             />
 
 </android.support.design.widget.CoordinatorLayout>
