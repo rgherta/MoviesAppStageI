@@ -53,6 +53,11 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
     public static int TASK_LOADER_INSERT_MOVIE_ID;
     public static int TASK_LOADER_DELETE_MOVIE_ID;
     public static int TASK_LOADER_QUERY_MOVIE_ID;
+    public static String YOUTUBE_BASE_URL;
+    public static String YOUTUBE_PARAM;
+    public static String YOUTUBE_KEY;
+    public static String YOUTUBE_INTENT_TYPE;
+    public static String YOUTUBE_INTENT_TEXT;
 
     //Loader variables
     private String videosUrlString;
@@ -70,6 +75,9 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
 
     //Movie isFavourite variable
     private boolean isFav = false;
+    private boolean firstReviewIsClicked = false;
+    private boolean secondReviewIsClicked = false;
+    private String firstTrailerUrl;
 
 
     @Override
@@ -88,7 +96,11 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         TASK_LOADER_INSERT_MOVIE_ID = getResources().getInteger(R.integer.task_insert_loader_id);
         TASK_LOADER_DELETE_MOVIE_ID = getResources().getInteger(R.integer.task_delete_loader_id);
         TASK_LOADER_QUERY_MOVIE_ID = getResources().getInteger(R.integer.task_query_loader_id);
-
+        YOUTUBE_BASE_URL = getResources().getString(R.string.youtube_base_url);
+        YOUTUBE_PARAM = getResources().getString(R.string.youtube_param);
+        YOUTUBE_KEY = getResources().getString(R.string.youtube_key);
+        YOUTUBE_INTENT_TYPE = getResources().getString(R.string.youtube_intent_type);
+        YOUTUBE_INTENT_TEXT = getResources().getString(R.string.youtube_intent_text);
 
         ImageView poster = (ImageView) findViewById(R.id.detail_image);
         TextView title = (TextView) findViewById(R.id.detail_title);
@@ -111,7 +123,6 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
             releaseDate.setText(movieReleaseDate);
             averageVote.setText(movieRating);
             detailDescription.setText(moviePlot);
-            Log.v("ROMAN", movieID); //TODO: Remove at the end
 
             Picasso.with(DetailsActivity.this)
                     .load(moviePoster)
@@ -231,7 +242,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         if(myData.length()>0) {
             String firstTrailerKey = myData.getJSONObject(0).getString(jsonMovieKey);
             String firstTrailerName = myData.getJSONObject(0).getString(jsonMovieName);
-            final String firstTrailerUrl = NetworkUtils.buildYoutubeUrl(firstTrailerKey);
+            firstTrailerUrl = NetworkUtils.buildYoutubeUrl(firstTrailerKey);
 
             TextView firstTrailerTextView = (TextView) findViewById(R.id.first_trailer_txt);
             firstTrailerTextView.setVisibility(View.VISIBLE);
@@ -305,11 +316,11 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
             TextView reviewsTitle = (TextView) findViewById(R.id.reviews_title);
             reviewsTitle.setVisibility(View.VISIBLE);
 
-            TextView firstReview = (TextView) findViewById(R.id.review_first);
+            final TextView firstReview = (TextView) findViewById(R.id.review_first);
             firstReview.setVisibility(View.VISIBLE);
 
-            String firstReviewContent = myData.getJSONObject(0).getString(jsonMovieContent).replaceAll("\r\n\r\n","").replaceAll("[^A-Za-z0-9- -.-']",""); //TODO: hardcode
-            int maxCharsFirst;
+            final String firstReviewContent = myData.getJSONObject(0).getString(jsonMovieContent).replaceAll("\r\n\r\n","").replaceAll("[^A-Za-z0-9- -.-']","");
+            final int maxCharsFirst;
             if(firstReviewContent.length()>maxCharactersReview) {
                 maxCharsFirst = maxCharactersReview;
             } else {
@@ -317,17 +328,31 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
             }
             firstReview.setText(firstReviewContent.substring(0,maxCharsFirst).concat("..."));
 
-            TextView firstAuthor = (TextView) findViewById(R.id.review_first_author);
+            final TextView firstAuthor = (TextView) findViewById(R.id.review_first_author);
             firstAuthor.setVisibility(View.VISIBLE);
             firstAuthor.setText(myData.getJSONObject(0).getString(jsonMovieAuthor));
+
+
+            firstReview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(!firstReviewIsClicked) {
+                        firstReview.setText(firstReviewContent);
+                        firstReviewIsClicked = !firstReviewIsClicked;
+                    } else {
+                        firstReview.setText(firstReviewContent.substring(0,maxCharsFirst).concat("..."));
+                        firstReviewIsClicked = !firstReviewIsClicked;
+                    }
+                }
+            });
 
         }
 
         if(myData.length() > 1){
-            TextView secondReview = (TextView) findViewById(R.id.review_second);
+            final TextView secondReview = (TextView) findViewById(R.id.review_second);
             secondReview.setVisibility(View.VISIBLE);
-            String secondReviewContent = myData.getJSONObject(1).getString(jsonMovieContent).replaceAll("\r\n\r\n","").replaceAll("[^A-Za-z0-9- -.-']",""); //TODO: hardcode
-            int maxCharsSec;
+            final String secondReviewContent = myData.getJSONObject(1).getString(jsonMovieContent).replaceAll("\r\n\r\n","").replaceAll("[^A-Za-z0-9- -.-']","");
+            final int maxCharsSec;
             if(secondReviewContent.length()>maxCharactersReview) {
                 maxCharsSec = maxCharactersReview;
             } else {
@@ -338,6 +363,19 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
             TextView secondAuthor = (TextView) findViewById(R.id.review_second_author);
             secondAuthor.setVisibility(View.VISIBLE);
             secondAuthor.setText(myData.getJSONObject(1).getString(jsonMovieAuthor));
+
+            secondReview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(!secondReviewIsClicked) {
+                        secondReview.setText(secondReviewContent);
+                        secondReviewIsClicked = !secondReviewIsClicked;
+                    } else {
+                        secondReview.setText(secondReviewContent.substring(0,maxCharsSec).concat("..."));
+                        secondReviewIsClicked = !secondReviewIsClicked;
+                    }
+                }
+            });
 
         }
 
@@ -357,9 +395,8 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
                 int id = item.getItemId();
                 if (id == R.id.action_share) {
                     Intent shareIntent = ShareCompat.IntentBuilder.from(this)
-                            .setType("text/plain")
-                            //TODO: Hardcode and add youtube URL
-                            .setText("Hey checkout this cool movie")
+                            .setType(YOUTUBE_INTENT_TYPE)
+                            .setText(YOUTUBE_INTENT_TEXT + firstTrailerUrl)
                             .getIntent();
                     shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
                     startActivity(shareIntent);
@@ -410,6 +447,17 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
             }
         }
 
-
-
+    @Override
+    protected void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
     }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState){
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+
+
+
+}

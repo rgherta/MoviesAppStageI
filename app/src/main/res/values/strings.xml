@@ -3,6 +3,7 @@
     <!-- App title -->
     <string name="app_name">My Movies</string>
     <string name="details_activity_name">Movie Details</string>
+    <string name="favorites_activity_name">Favorite Movies</string>
 
     <!-- Main Activity Spinner Choices -->
     <string-array name="spinner_choices">
@@ -46,6 +47,11 @@
     <string name="trailers_param">videos</string>
     <string name="trailers_bundle">trailers extra</string>
     <string name="movie_bundle">movie extra bundle</string>
+    <string name="youtube_base_url">https://www.youtube.com</string>
+    <string name="youtube_param">watch</string>
+    <string name="youtube_key">v</string>
+    <string name="youtube_intent_type">text/plain</string>
+    <string name="youtube_intent_text">Hey checkout this cool movie </string>
 
     <!-- Movie Review -->
     <string name="reviews">Latest Reviews</string>

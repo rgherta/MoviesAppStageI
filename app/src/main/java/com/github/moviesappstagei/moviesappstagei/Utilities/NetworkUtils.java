@@ -13,6 +13,11 @@ import static com.github.moviesappstagei.moviesappstagei.MovieGallery.MDB_KEY;
 import static com.github.moviesappstagei.moviesappstagei.MovieGallery.MOVIES_BASE_URL;
 import static com.github.moviesappstagei.moviesappstagei.MovieGallery.QUERY_PARAM;
 
+import static com.github.moviesappstagei.moviesappstagei.DetailsActivity.YOUTUBE_BASE_URL;
+import static com.github.moviesappstagei.moviesappstagei.DetailsActivity.YOUTUBE_PARAM;
+import static com.github.moviesappstagei.moviesappstagei.DetailsActivity.YOUTUBE_KEY;
+
+
 /**
  * Created by RGHERTA on 2/20/2017.
  */
@@ -73,9 +78,9 @@ public class NetworkUtils {
     }
 
     public static String buildYoutubeUrl(String key) {
-        Uri builtUri = Uri.parse("https://www.youtube.com").buildUpon() //TODO: Hardcode
-                .appendPath("watch")
-                .appendQueryParameter("v", key)
+        Uri builtUri = Uri.parse(YOUTUBE_BASE_URL).buildUpon()
+                .appendPath(YOUTUBE_PARAM)
+                .appendQueryParameter(YOUTUBE_KEY, key)
                 .build();
         URL url = null;
 

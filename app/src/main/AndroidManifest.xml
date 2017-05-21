@@ -31,6 +31,16 @@
                 android:value=".MovieGallery" />
         </activity>
 
+        <activity android:name=".FavoritesActivity"
+            android:parentActivityName=".MovieGallery"
+            android:label="@string/favorites_activity_name"
+            android:launchMode="singleTask">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MovieGallery" />
+        </activity>
+
         <provider
             android:name="com.github.moviesappstagei.moviesappstagei.Database.MovieContentProvider"
             android:authorities="com.github.moviesappstagei.moviesappstagei"

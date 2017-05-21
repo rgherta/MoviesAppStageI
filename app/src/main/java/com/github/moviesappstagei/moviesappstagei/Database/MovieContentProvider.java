@@ -55,6 +55,7 @@ public class MovieContentProvider extends ContentProvider {
                         null,
                         null,
                         sortOrder);
+                break;
             case MOVIE:
                 //using Selection and selection Args
                 //URI: content://authority/movies/#

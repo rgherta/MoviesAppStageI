@@ -12,6 +12,8 @@
     <dimen name="description_padding">16dp</dimen>
     <dimen name="description_size">20sp</dimen>
     <dimen name="padding_votes_label">0dp</dimen>
+    <dimen name="fab_elevation">3dp</dimen>
+    <dimen name="fab_margin">36dp</dimen>
 
     <!-- Trailers Dimensions -->
     <dimen name="icon_padding">16dp</dimen>
@@ -33,6 +35,7 @@
     <integer name="task_insert_loader_id">36</integer>
     <integer name="task_delete_loader_id">37</integer>
     <integer name="task_query_loader_id">38</integer>
+    <integer name="fav_loader_id">360</integer>
 
     <!-- RatingBar Dimensions -->
     <integer name="num_stars">6</integer>

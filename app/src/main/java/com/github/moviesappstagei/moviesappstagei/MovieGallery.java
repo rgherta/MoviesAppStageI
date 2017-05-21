@@ -1,6 +1,7 @@
 package com.github.moviesappstagei.moviesappstagei;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -182,11 +183,8 @@ public class MovieGallery extends AppCompatActivity implements LoaderManager.Loa
                     }
                     mainRecycler.scrollToPosition(0);
                 } else if (selectedOption.equals(MENU_FAVS)){
-                    //TODO: update favorites list
-/*                    LinearLayoutManager favLayoutManager = new LinearLayoutManager(getBaseContext(), LinearLayoutManager.VERTICAL, false);
-                    mainRecycler.setLayoutManager(favLayoutManager);*/
-
-
+                    Intent intent = new Intent(getBaseContext(), FavoritesActivity.class);
+                    getBaseContext().startActivity(intent);
                 }
             }
 
@@ -252,6 +250,16 @@ public class MovieGallery extends AppCompatActivity implements LoaderManager.Loa
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnected();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState){
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
 
